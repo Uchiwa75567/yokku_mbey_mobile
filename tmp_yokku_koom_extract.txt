@@ -1,0 +1,665 @@
+PAGES: 22
+
+===== PAGE 1 =====
+
+YOKKU KOOM
+Cahier de vision et de cadrage fonctionnel
+Développer l’économie locale grâce au numérique
+Projet composé de trois applications :
+YOKKU DUUR
+Application dédiée à l’élevage
+YOKKU MBEY
+Application dédiée à l’agriculture
+YOKKU GEEJ
+Application dédiée à la pêche
+Année : 2026
+
+===== PAGE 2 =====
+
+Table des matières
+1 Présentation générale du projet 3
+2 Constat général 3
+3 Vision du projet 3
+4 Organisation de l’écosystème YOKKU KOOM 4
+5 Principes fondamentaux des applications 4
+5.1 Simplicité . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+5.2 Accessibilité . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+5.3 Utilisation mobile . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+5.4 Démarrage avec peu de moyens . . . . . . . . . . . . . . . . . . . . . . . . 5
+5.5 Contact direct . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+6 YOKKU DUUR : application dédiée à l’élevage 6
+6.1 Présentation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+6.2 Problèmes rencontrés dans l’élevage . . . . . . . . . . . . . . . . . . . . . . 6
+6.3 Objectif principal de YOKKU DUUR . . . . . . . . . . . . . . . . . . . . . 6
+6.4 Fonctionnalité 1 : publication d’animaux . . . . . . . . . . . . . . . . . . . 7
+6.5 Fonctionnalité 2 : réservation simple . . . . . . . . . . . . . . . . . . . . . . 7
+6.6 Fonctionnalité 3 : pré-réservation pour événements religieux . . . . . . . . 7
+6.7 Fonctionnalité 4 : demandes d’animaux . . . . . . . . . . . . . . . . . . . . 8
+6.8 Fonctionnalité 5 : besoins liés à l’élevage . . . . . . . . . . . . . . . . . . . 8
+6.9 Fonctionnalité 6 : opportunités d’investissement en élevage . . . . . . . . . 8
+6.10 Fonctionnalité 7 : contact direct . . . . . . . . . . . . . . . . . . . . . . . . 8
+6.11 Résumé de la valeur de YOKKU DUUR . . . . . . . . . . . . . . . . . . . 9
+7 YOKKU MBEY : application dédiée à l’agriculture 10
+7.1 Présentation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+7.2 Problèmes rencontrés dans l’agriculture . . . . . . . . . . . . . . . . . . . . 10
+7.3 Objectif principal de YOKKU MBEY . . . . . . . . . . . . . . . . . . . . . 10
+7.4 Fonctionnalité 1 : publication de récoltes . . . . . . . . . . . . . . . . . . . 11
+7.5 Fonctionnalité 2 : réservation des récoltes . . . . . . . . . . . . . . . . . . . 11
+7.6 Fonctionnalité 3 : demandes de produits agricoles . . . . . . . . . . . . . . 11
+7.7 Fonctionnalité 4 : besoins agricoles . . . . . . . . . . . . . . . . . . . . . . 12
+7.8 Fonctionnalité 5 : location de tracteurs et matériel agricole . . . . . . . . . 12
+7.9 Fonctionnalité 6 : recherche de semences . . . . . . . . . . . . . . . . . . . 12
+7.10 Fonctionnalité 7 : recherche de solutions d’irrigation . . . . . . . . . . . . . 13
+1
+
+===== PAGE 3 =====
+
+7.11 Fonctionnalité 8 : opportunités agricoles pour investisseurs et ONG . . . . 13
+7.12 Fonctionnalité 9 : contact direct . . . . . . . . . . . . . . . . . . . . . . . . 13
+7.13 Résumé de la valeur de YOKKU MBEY . . . . . . . . . . . . . . . . . . . 13
+8 YOKKU GEEJ : application dédiée à la pêche 15
+8.1 Présentation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+8.2 Problèmes rencontrés dans la pêche . . . . . . . . . . . . . . . . . . . . . . 15
+8.3 Objectif principal de YOKKU GEEJ . . . . . . . . . . . . . . . . . . . . . 15
+8.4 Fonctionnalité 1 : publication des produits de pêche . . . . . . . . . . . . . 15
+8.5 Fonctionnalité 2 : réservation rapide . . . . . . . . . . . . . . . . . . . . . . 16
+8.6 Fonctionnalité 3 : demandes de produits de pêche . . . . . . . . . . . . . . 16
+8.7 Fonctionnalité 4 : connexion entre zones d’abondance et zones de besoin . . 16
+8.8 Fonctionnalité 5 : besoins liés à la pêche . . . . . . . . . . . . . . . . . . . 16
+8.9 Fonctionnalité 6 : opportunités pour partenaires . . . . . . . . . . . . . . . 17
+8.10 Résumé de la valeur de YOKKU GEEJ . . . . . . . . . . . . . . . . . . . . 17
+9 Fonctionnalités communes aux trois applications 18
+9.1 Publication d’annonces . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+9.2 Réservation simple . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+9.3 Demandes de produits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+9.4 Besoins et opportunités . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+9.5 Contact direct . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+10 Business model 18
+10.1 Accès gratuit . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+10.2 Revenus possibles . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+10.3 Exemples par application . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+10.3.1 YOKKU DUUR . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+10.3.2 YOKKU MBEY . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+10.3.3 YOKKU GEEJ . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+11 Perspectives futures 20
+11.1 Fonctionnalités futures possibles . . . . . . . . . . . . . . . . . . . . . . . . 20
+12 Conclusion 20
+2
+
+===== PAGE 4 =====
+
+1. Présentation générale du projet
+YOKKU KOOM est un projet numérique dont l’objectif est de contribuer au déve-
+loppement de l’économie locale sénégalaise à travers des applications mobiles simples,
+accessibles et adaptées aux réalités du terrain.
+Le nom du projet est composé de deux mots :
+—YOKKU: développer, faire grandir, faire évoluer;
+—KOOM: économie, richesse, prospérité.
+Ainsi, YOKKU KOOM signifie l’idée de développer l’économie locale en aidant les
+acteurs des secteurs productifs à mieux vendre, mieux s’organiser, mieux communiquer et
+mieux accéder aux opportunités.
+Le projet ne se limite pas à une simple marketplace. Il s’agit plutôt d’un écosystème
+d’applications destinées à résoudre des problèmes concrets rencontrés dans les secteurs de
+l’élevage, de l’agriculture et de la pêche.
+2. Constat général
+Au Sénégal, plusieurs acteurs économiques locaux produisent, élèvent, pêchent ou
+commercialisent des produits essentiels. Pourtant, ils rencontrent souvent des difficultés
+importantes.
+Parmi ces difficultés, on peut citer :
+— le manque de visibilité des producteurs;
+— la difficulté à trouver rapidement des acheteurs;
+— la perte de produits périssables;
+— le manque de moyens financiers ou matériels;
+— la difficulté à accéder aux équipements;
+— le manque de connexion entre les zones qui produisent et les zones qui ont besoin;
+— la difficulté à anticiper les ventes;
+— l’absence d’un outil simple permettant de publier, réserver ou rechercher des pro-
+duits.
+YOKKU KOOM souhaite répondre à ces problèmes avec des solutions simples, pro-
+gressives et adaptées aux utilisateurs finaux.
+3. Vision du projet
+La vision de YOKKU KOOM est de créer un ensemble d’applications mobiles capables
+de faciliter la circulation des produits, des services, des opportunités et des besoins entre
+les acteurs économiques locaux.
+3
+
+===== PAGE 5 =====
+
+Le projet veut permettre à chaque utilisateur de faire rapidement une action utile :
+— publier un produit;
+— rechercher un produit;
+— réserver un produit;
+— publier un besoin;
+— trouver un acheteur;
+— trouver un fournisseur;
+— trouver un investisseur;
+— trouver un service utile;
+— contacter directement une personne.
+L’objectif est de réduire au maximum la complexité. L’application doit être simple,
+rapide et compréhensible, même pour les utilisateurs qui ne sont pas très à l’aise avec la
+lecture ou les outils numériques.
+4. Organisation de l’écosystème YOKKU KOOM
+YOKKU KOOM sera composé de trois applications spécialisées :
+Application Secteur concerné
+YOKKU DUUR Élevage
+YOKKU MBEY Agriculture
+YOKKU GEEJ Pêche
+Chaque application garde la même philosophie :
+— simplicité;
+— accessibilité;
+— rapidité;
+— mise en relation;
+— réduction des pertes;
+— développement économique.
+5. Principes fondamentaux des applications
+Toutes les applications YOKKU doivent respecter les principes suivants :
+5.1. Simplicité
+Les applications doivent éviter les parcours compliqués. L’utilisateur doit pouvoir pu-
+blier, réserver ou contacter quelqu’un en quelques clics seulement.
+4
+
+===== PAGE 6 =====
+
+5.2. Accessibilité
+Les interfaces doivent être pensées pour des utilisateurs variés, y compris ceux qui
+lisent difficilement ou qui utilisent rarement des applications numériques.
+Cela implique :
+— des boutons visibles;
+— des icônes compréhensibles;
+— peu de texte;
+— des actions claires;
+— des couleurs simples;
+— une navigation directe.
+5.3. Utilisation mobile
+Les applications seront d’abord pensées pour les téléphones mobiles, car la majorité
+des utilisateurs ciblés utilisent principalement leur téléphone.
+5.4. Démarrage avec peu de moyens
+Le projet doit pouvoir commencer sans une grande équipe, sans agents terrain et sans
+logistique lourde. Au début, YOKKU KOOM jouera surtout un rôle de mise en relation.
+5.5. Contact direct
+Pour limiter la complexité au démarrage, les utilisateurs pourront se contacter direc-
+tement par :
+— appel téléphonique;
+— WhatsApp;
+— message simple.
+5
+
+===== PAGE 7 =====
+
+6. YOKKU DUUR : application dédiée à l’élevage
+6.1. Présentation
+YOKKU DUUR est une application mobile destinée au secteur de l’élevage. Elle vise
+à aider les éleveurs à vendre leurs animaux, recevoir des réservations, trouver des clients,
+publier leurs besoins et accéder à des opportunités.
+L’application cible principalement :
+— les éleveurs;
+— les acheteurs de bétail;
+— les revendeurs;
+— les personnes préparant des événements religieux comme la Tabaski ou la Korité;
+— les fournisseurs liés à l’élevage;
+— les investisseurs ou partenaires intéressés par l’élevage.
+6.2. Problèmes rencontrés dans l’élevage
+Les éleveurs rencontrent plusieurs difficultés :
+— ils manquent parfois de visibilité;
+— ils ne trouvent pas toujours rapidement des acheteurs;
+— ils dépendent souvent du bouche-à-oreille;
+— ils peuvent avoir des invendus à certaines périodes;
+— ils manquent parfois de moyens pour agrandir leur élevage;
+— ils ont besoin de transport pour déplacer les animaux;
+— ils ont besoin d’aliments pour bétail;
+— ils veulent anticiper les ventes pendant les grandes périodes comme la Tabaski.
+6.3. Objectif principal de YOKKU DUUR
+L’objectif principal de YOKKU DUUR est de permettre aux éleveurs de mieux vendre
+leurs animaux et de mieux organiser leurs activités.
+L’application doit permettre de :
+— publier des animaux disponibles;
+— recevoir des réservations;
+— répondre à des demandes d’acheteurs;
+— trouver des services utiles;
+— publier des besoins;
+— augmenter la visibilité des éleveurs.
+6
+
+===== PAGE 8 =====
+
+6.4. Fonctionnalité 1 : publication d’animaux
+Un éleveur peut publier un animal ou un lot d’animaux disponibles.
+Les informations peuvent être :
+— type d’animal : mouton, chèvre, vache, volaille, etc.;
+— photo;
+— prix;
+— région;
+— quantité disponible;
+— période de disponibilité;
+— numéro de contact.
+Cette fonctionnalité permet à l’éleveur de rendre ses animaux visibles auprès d’un
+grand nombre d’acheteurs.
+6.5. Fonctionnalité 2 : réservation simple
+L’acheteur peut réserver un animal sans passer par un système compliqué.
+Exemple :
+Un client voit un mouton disponible pour la Tabaski. Il clique sur “Réserver”,
+indique son nom, son numéro et confirme son intérêt.
+Cette réservation permet à l’éleveur de savoir à l’avance quels animaux intéressent les
+acheteurs.
+Au démarrage, la réservation peut être simple et sans paiement intégré. Le paiement
+pourra être ajouté plus tard comme perspective.
+6.6. Fonctionnalité 3 : pré-réservation pour événements religieux
+Cette fonctionnalité est particulièrement importante pour les périodes comme :
+— Tabaski;
+— Korité;
+— cérémonies familiales;
+— baptêmes;
+— mariages.
+L’éleveur peut annoncer ses animaux plusieurs semaines ou mois à l’avance. Les ache-
+teurs peuvent réserver tôt pour éviter les recherches de dernière minute.
+7
+
+===== PAGE 9 =====
+
+6.7. Fonctionnalité 4 : demandes d’animaux
+La fonctionnalité ne doit pas seulement permettre aux vendeurs de publier. Les ache-
+teurs doivent aussi pouvoir publier leurs besoins.
+Exemple :
+Je cherche 20 moutons à livrer à Dakar avant la Tabaski.
+Les éleveurs disponibles peuvent voir cette demande et contacter l’acheteur.
+Cela permet de connecter les zones où il y a beaucoup d’animaux avec les zones où la
+demande est forte.
+6.8. Fonctionnalité 5 : besoins liés à l’élevage
+L’éleveur peut publier des besoins comme :
+— besoin d’aliment pour bétail;
+— besoin de transport;
+— besoin d’un financement;
+— besoin d’un enclos;
+— besoin de matériel;
+— besoin de partenaire.
+Cette partie permet à YOKKU DUUR de ne pas être seulement une application de
+vente, mais aussi une application d’opportunités.
+6.9. Fonctionnalité 6 : opportunités d’investissement en élevage
+Certains éleveurs ont l’expérience, l’espace ou les animaux, mais manquent de moyens
+pour développer leur activité.
+Ils peuvent publier une opportunité comme :
+Je possède un espace pour développer un élevage de moutons, mais je cherche
+un partenaire pour financer l’alimentation et l’achat de nouveaux animaux.
+Les investisseurs, ONG ou partenaires peuvent consulter ces opportunités et contacter
+directement l’éleveur.
+6.10. Fonctionnalité 7 : contact direct
+Chaque annonce doit permettre un contact rapide :
+— appel direct;
+— WhatsApp;
+— message simple.
+Cela permet d’éviter un système de discussion trop complexe au début.
+8
+
+===== PAGE 10 =====
+
+6.11. Résumé de la valeur de YOKKU DUUR
+YOKKU DUUR aide à :
+— vendre plus vite;
+— anticiper les ventes;
+— réduire les invendus;
+— faciliter les réservations;
+— connecter éleveurs et acheteurs;
+— ouvrir des opportunités d’investissement;
+— développer le secteur de l’élevage.
+9
+
+===== PAGE 11 =====
+
+7. YOKKU MBEY : application dédiée à l’agriculture
+7.1. Présentation
+YOKKU MBEY est une application mobile destinée aux agriculteurs, acheteurs, com-
+merçants, fournisseurs, investisseurs et ONG.
+Elle vise à faciliter :
+— la vente des récoltes;
+— la réservation des produits;
+— la recherche de produits dans d’autres zones;
+— la recherche de matériel agricole;
+— la recherche de semences;
+— la recherche d’irrigation;
+— la recherche de financement;
+— la mise en relation avec les investisseurs et ONG.
+7.2. Problèmes rencontrés dans l’agriculture
+Les agriculteurs rencontrent plusieurs difficultés :
+— pertes de récoltes à cause du manque d’acheteurs rapides;
+— difficulté à vendre des produits périssables comme la tomate, la salade ou les fruits;
+— manque d’accès aux équipements agricoles;
+— manque de moyens financiers;
+— difficulté à trouver de bonnes semences;
+— difficulté à trouver des solutions d’irrigation;
+— absence de visibilité auprès des acheteurs;
+— difficulté à connecter les zones de production et les zones de besoin.
+7.3. Objectif principal de YOKKU MBEY
+L’objectif principal de YOKKU MBEY est de permettre aux agriculteurs de mieux
+vendre, mieux anticiper et mieux accéder aux ressources nécessaires à leur production.
+L’application doit permettre :
+— d’écouler rapidement les récoltes;
+— de recevoir des réservations;
+— de publier des besoins agricoles;
+— de trouver des équipements;
+— de connecter les zones productrices et les zones demandeuses;
+— de faciliter l’accès aux opportunités.
+10
+
+===== PAGE 12 =====
+
+7.4. Fonctionnalité 1 : publication de récoltes
+L’agriculteur peut publier ses produits disponibles.
+Les informations peuvent être :
+— nom du produit : tomate, oignon, pomme de terre, mangue, etc.;
+— photo;
+— quantité;
+— prix;
+— région;
+— date de disponibilité;
+— numéro de contact.
+Cettefonctionnalitépermetderendrelesrécoltesvisiblesetdetrouverplusrapidement
+des acheteurs.
+7.5. Fonctionnalité 2 : réservation des récoltes
+La réservation est une fonctionnalité essentielle dans l’agriculture, car plusieurs pro-
+duits se gâtent rapidement.
+Exemple :
+Un agriculteur annonce que 500 kg de tomates seront disponibles dans trois
+jours. Un acheteur peut réserver 100 kg avant même la récolte.
+Cette fonctionnalité permet :
+— de réduire les pertes;
+— d’anticiper les ventes;
+— de mieux organiser la récolte;
+— d’éviter que les produits restent invendus.
+7.6. Fonctionnalité 3 : demandes de produits agricoles
+Certaines zones ne produisent pas certains légumes ou fruits parce que les terres ne
+sont pas adaptées à ces cultures. Les habitants, commerçants ou restaurants de ces zones
+peuvent donc avoir besoin de produits venant d’autres régions.
+L’application doit permettre à un utilisateur de publier une demande.
+Exemple :
+Je cherche 300 kg de tomate pour Tambacounda.
+Les agriculteurs des zones qui produisent beaucoup de tomates peuvent répondre à
+cette demande.
+Cette fonctionnalité permet de connecter :
+11
+
+===== PAGE 13 =====
+
+— les zones où les produits sont abondants;
+— les zones où ces produits manquent.
+Cela favorise une meilleure circulation des produits agricoles dans le pays.
+7.7. Fonctionnalité 4 : besoins agricoles
+Les agriculteurs peuvent publier leurs besoins.
+Exemples de besoins :
+— besoin de tracteur;
+— besoin de semences;
+— besoin d’engrais;
+— besoin d’irrigation;
+— besoin de financement;
+— besoin de main-d’œuvre;
+— besoin de matériel agricole.
+Cette fonctionnalité permet aux agriculteurs d’exprimer clairement ce qui bloque leur
+activité.
+7.8. Fonctionnalité 5 : location de tracteurs et matériel agricole
+Beaucoup d’agriculteurs n’ont pas les moyens d’acheter un tracteur ou du matériel
+agricole. En même temps, certaines personnes possèdent du matériel qui n’est pas utilisé
+tous les jours.
+YOKKU MBEY peut mettre en relation :
+— les propriétaires de tracteurs;
+— les agriculteurs qui ont besoin de louer un tracteur;
+— les propriétaires de motopompes;
+— les utilisateurs qui cherchent du matériel.
+Exemple :
+Un agriculteur cherche un tracteur pour labourer 2 hectares à Kaolack. Un
+propriétaire de tracteur disponible dans la zone peut le contacter.
+7.9. Fonctionnalité 6 : recherche de semences
+Les agriculteurs peuvent rechercher des semences adaptées à leurs cultures.
+Exemple :
+Je cherche des semences de tomate pour une culture à Thiès.
+Les fournisseurs ou autres agriculteurs peuvent répondre.
+12
+
+===== PAGE 14 =====
+
+7.10. Fonctionnalité 7 : recherche de solutions d’irrigation
+L’eau est un problème important pour beaucoup d’agriculteurs. L’application peut
+permettre de publier des besoins en irrigation.
+Exemples :
+— recherche de motopompe;
+— recherche de système goutte-à-goutte;
+— recherche de tuyaux;
+— recherche de partenaire pour forage;
+— recherche d’aide pour installer une solution d’irrigation.
+7.11. Fonctionnalité 8 : opportunités agricoles pour investisseurs
+et ONG
+Beaucoup d’agriculteurs ont des terres mais manquent de moyens pour produire. En
+même temps, des investisseurs ou ONG peuvent vouloir soutenir des projets agricoles.
+L’application permettra aux agriculteurs de publier leurs opportunités.
+Exemple :
+Je possède 3 hectares cultivables à Fatick. Je cherche un partenaire pour pro-
+duire de l’oignon.
+Les investisseurs ou ONG peuvent consulter ces opportunités et contacter directement
+l’agriculteur.
+7.12. Fonctionnalité 9 : contact direct
+Comme dans les autres applications, le contact doit être simple :
+— appel;
+— WhatsApp;
+— message.
+7.13. Résumé de la valeur de YOKKU MBEY
+YOKKU MBEY permet de :
+— réduire les pertes agricoles;
+— vendre plus rapidement;
+— anticiper les commandes;
+— connecter les régions productrices et les régions demandeuses;
+— faciliter l’accès aux équipements;
+13
+
+===== PAGE 15 =====
+
+— faciliter l’accès aux semences;
+— faciliter l’accès à l’irrigation;
+— connecter agriculteurs, investisseurs et ONG;
+— développer l’économie agricole locale.
+14
+
+===== PAGE 16 =====
+
+8. YOKKU GEEJ : application dédiée à la pêche
+8.1. Présentation
+YOKKU GEEJ est une application mobile dédiée au secteur de la pêche. Elle vise à
+aider les pêcheurs, mareyeurs, vendeurs, restaurants, hôtels et acheteurs à mieux échanger
+autour des produits de la mer.
+L’application doit permettre de vendre rapidement, réserver, rechercher des produits
+et connecter les zones de débarquement avec les zones de forte demande.
+8.2. Problèmes rencontrés dans la pêche
+Le secteur de la pêche rencontre plusieurs difficultés :
+— les produits se conservent difficilement;
+— les pêcheurs doivent vendre rapidement;
+— certains acheteurs ne savent pas où trouver certains produits;
+— certains restaurants ou hôtels ont besoin de produits précis;
+— leszonesdepêchepeuventavoirdel’abondancependantqued’autreszonesmanquent
+de produits;
+— les pêcheurs manquent parfois de visibilité.
+8.3. Objectif principal de YOKKU GEEJ
+L’objectif principal de YOKKU GEEJ est de faciliter l’écoulement rapide des produits
+de pêche et de connecter les pêcheurs aux acheteurs.
+L’application doit permettre :
+— de publier les produits de pêche disponibles;
+— de recevoir des réservations;
+— de publier des demandes de produits;
+— de connecter les zones de pêche et les zones de consommation;
+— de réduire les pertes.
+8.4. Fonctionnalité 1 : publication des produits de pêche
+Un pêcheur ou vendeur peut publier ses produits disponibles.
+Les informations peuvent être :
+— type de poisson ou produit marin;
+— photo;
+15
+
+===== PAGE 17 =====
+
+— quantité;
+— prix;
+— zone ou port;
+— disponibilité;
+— contact.
+8.5. Fonctionnalité 2 : réservation rapide
+Les acheteurs peuvent réserver les produits de pêche.
+Exemple :
+Un restaurant réserve 30 kg de poisson frais disponible au port de Mbour.
+Cette fonctionnalité permet de vendre plus rapidement et de réduire les risques de
+perte.
+8.6. Fonctionnalité 3 : demandes de produits de pêche
+Les acheteurs peuvent publier leurs besoins.
+Exemple :
+Je cherche 50 kg de poisson pour un restaurant à Dakar.
+Les pêcheurs ou mareyeurs peuvent répondre à la demande.
+8.7. Fonctionnalité 4 : connexion entre zones d’abondance et zones
+de besoin
+Certaines zones peuvent avoir beaucoup de poissons à un moment donné, pendant que
+d’autres zones en manquent.
+YOKKU GEEJ peut servir de pont entre :
+— les ports ou zones de débarquement;
+— les restaurants;
+— les hôtels;
+— les marchés;
+— les acheteurs particuliers.
+8.8. Fonctionnalité 5 : besoins liés à la pêche
+Les utilisateurs peuvent publier des besoins tels que :
+— besoin de glace;
+— besoin de transport;
+16
+
+===== PAGE 18 =====
+
+— besoin de conservation;
+— besoin de matériel de pêche;
+— besoin de financement;
+— besoin de partenaire commercial.
+8.9. Fonctionnalité 6 : opportunités pour partenaires
+Les pêcheurs ou vendeurs peuvent publier des opportunités.
+Exemple :
+Nous avons une forte capacité de pêche mais nous cherchons un partenaire
+pour la conservation et l’écoulement régulier.
+Cela peut intéresser :
+— investisseurs;
+— restaurants;
+— hôtels;
+— mareyeurs;
+— ONG;
+— commerçants.
+8.10. Résumé de la valeur de YOKKU GEEJ
+YOKKU GEEJ permet de :
+— vendre les produits de pêche plus rapidement;
+— réduire les pertes;
+— connecter pêcheurs et acheteurs;
+— aider les restaurants et hôtels à trouver des produits;
+— connecter les zones de débarquement et les zones de consommation;
+— développer l’économie de la pêche.
+17
+
+===== PAGE 19 =====
+
+9. Fonctionnalités communes aux trois applications
+9.1. Publication d’annonces
+Chaque application permet de publier :
+— des produits disponibles;
+— des besoins;
+— des demandes;
+— des opportunités.
+9.2. Réservation simple
+Chaque application propose une réservation simple pour aider les utilisateurs à anti-
+ciper les ventes ou les achats.
+9.3. Demandes de produits
+Les utilisateurs peuvent publier ce qu’ils recherchent.
+Cette fonctionnalité est valable pour :
+— les légumes et récoltes dans YOKKU MBEY;
+— les animaux dans YOKKU DUUR;
+— les poissons et produits de mer dans YOKKU GEEJ.
+9.4. Besoins et opportunités
+Chaque secteur permet de publier des besoins spécifiques :
+— matériel;
+— financement;
+— transport;
+— équipement;
+— partenariat.
+9.5. Contact direct
+Chaque annonce doit permettre un contact direct pour éviter les parcours compliqués.
+10. Business model
+Le modèle économique de YOKKU KOOM doit être progressif. L’objectif est de ne
+pas bloquer les utilisateurs avec des frais obligatoires.
+18
+
+===== PAGE 20 =====
+
+10.1. Accès gratuit
+Les fonctionnalités de base doivent rester gratuites :
+— inscription;
+— consultation;
+— publication simple;
+— réservation;
+— contact direct.
+10.2. Revenus possibles
+Le projet peut générer des revenus avec :
+— boost des annonces;
+— mise en avant de produits;
+— comptes professionnels;
+— badges de confiance;
+— publicités ciblées;
+— opportunités sponsorisées;
+— mise en avant pendant les périodes fortes.
+10.3. Exemples par application
+10.3.1. YOKKU DUUR
+Revenus possibles :
+— boost des moutons pendant la Tabaski;
+— mise en avant des éleveurs;
+— comptes professionnels pour gros vendeurs;
+— publicité pour aliments bétail ou services liés à l’élevage.
+10.3.2. YOKKU MBEY
+Revenus possibles :
+— boost des récoltes;
+— mise en avant des fournisseurs de semences;
+— comptes professionnels pour fournisseurs ou propriétaires de tracteurs;
+— opportunités sponsorisées par ONG ou partenaires.
+19
+
+===== PAGE 21 =====
+
+10.3.3. YOKKU GEEJ
+Revenus possibles :
+— boost des produits de pêche;
+— mise en avant des vendeurs;
+— publicité pour glace, conservation ou matériel de pêche;
+— comptes professionnels pour restaurants, hôtels ou mareyeurs.
+11. Perspectives futures
+Certaines fonctionnalités ne seront pas obligatoires au démarrage, mais pourront être
+ajoutées progressivement.
+11.1. Fonctionnalités futures possibles
+— paiement mobile intégré;
+— livraison ou transport organisé;
+— géolocalisation avancée;
+— vérification terrain;
+— agents terrain;
+— intelligence artificielle;
+— alertes météo;
+— assistance vocale;
+— traduction en langues locales;
+— statistiques avancées;
+— tableaux de bord;
+— système de notation;
+— badges de confiance avancés.
+12. Conclusion
+YOKKU KOOM est un projet ambitieux mais réaliste. Sa force repose sur sa capacité
+à commencer simplement tout en gardant une grande vision.
+Les trois applications YOKKU DUUR, YOKKU MBEY et YOKKU GEEJ répondent
+chacune à des problèmes précis du terrain.
+Le projet ne cherche pas seulement à vendre des produits. Il cherche à :
+— connecter les acteurs;
+20
+
+===== PAGE 22 =====
+
+— réduire les pertes;
+— améliorer les ventes;
+— faciliter les réservations;
+— faire circuler les produits entre les zones;
+— créer des opportunités économiques;
+— développer les secteurs productifs locaux.
+À travers YOKKU KOOM, l’objectif final est de contribuer au développement de
+l’économie locale sénégalaise grâce à des outils numériques simples, utiles et accessibles.
+YOKKU KOOM — Développer l’économie locale
+21

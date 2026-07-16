@@ -1,0 +1,31 @@
+name: yokku_mbey
+description: Application Flutter Yokku Mbey Agri Acheteur.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/splash_screen.png
+    - assets/images/splash_screen_1.png
+    - assets/images/splash_screen_2.png
+    - assets/images/splash_screen_3.png
+    - assets/images/senegal.png
+    - assets/images/google.png
+    - assets/images/logo_yokku_mbey.png
+    - assets/images/buyer_tomato.png
+    - assets/images/buyer_onion.png
+    - assets/images/buyer_potato.png
+    - assets/images/buyer_corn.png

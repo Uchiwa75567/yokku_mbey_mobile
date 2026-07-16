@@ -1,0 +1,4 @@
+enum SplashStage {
+  welcome,
+  onboarding,
+}
