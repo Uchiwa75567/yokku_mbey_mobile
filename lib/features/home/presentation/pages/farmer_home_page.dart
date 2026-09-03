@@ -3,7 +3,13 @@ import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../farmer_services/presentation/pages/farmer_services_pages.dart';
 import '../../../harvest_publication/presentation/pages/harvest_publication_page.dart';
+import '../../../harvests/presentation/pages/farmer_harvests_page.dart';
+import '../../../profile/presentation/pages/farmer_profile_page.dart';
+import '../../../reservations/presentation/pages/reservations_received_page.dart';
+import '../widgets/farmer_bottom_navigation.dart';
+import '../widgets/farmer_glass_surface.dart';
 
 class FarmerHomePage extends StatelessWidget {
   const FarmerHomePage({super.key});
@@ -13,7 +19,7 @@ class FarmerHomePage extends StatelessWidget {
     return const AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        backgroundColor: AppColors.white,
+        backgroundColor: Color(0xFF18241D),
         body: _FarmerHomeContent(),
       ),
     );
@@ -24,204 +30,185 @@ class _FarmerHomeContent extends StatelessWidget {
   const _FarmerHomeContent();
 
   static const double _designWidth = 440;
-  static const double _designHeight = 956;
+  static const double _designHeight = 1130;
+  static const double _navHeight = FarmerBottomNavigation.designHeight;
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox.expand(
-      child: FittedBox(
-        fit: BoxFit.contain,
-        alignment: Alignment.center,
-        child: SizedBox(
-          width: _designWidth,
-          height: _designHeight,
-          child: _FarmerHomeCanvas(),
-        ),
-      ),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final scale = (constraints.maxWidth / _designWidth).clamp(0.1, 1.0);
+        final width = _designWidth * scale;
+        final height = _designHeight * scale;
+        final navHeight = _navHeight * scale;
+        final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
+
+        return Center(
+          child: SizedBox(
+            width: width,
+            height: constraints.maxHeight,
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: navHeight + bottomInset + 18,
+                  ),
+                  child: SizedBox(
+                    width: width,
+                    height: height,
+                    child: FittedBox(
+                      fit: BoxFit.fill,
+                      alignment: Alignment.topLeft,
+                      child: SizedBox(
+                        width: _designWidth,
+                        height: _designHeight,
+                        child: _FarmerHomeCanvas(
+                          onPublishHarvest: () => Navigator.of(context)
+                              .pushNamed(HarvestPublicationPage.routeName),
+                          onNotifications: () => Navigator.of(context)
+                              .pushNamed(NotificationsPage.routeName),
+                          onWantedProducts: () => Navigator.of(context)
+                              .pushNamed(WantedProductsPage.routeName),
+                          onNeeds: () => Navigator.of(context)
+                              .pushNamed(MyNeedsPage.routeName),
+                          onOpportunities: () => Navigator.of(context)
+                              .pushNamed(OpportunitiesPage.routeName),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: 0,
+                  right: 0,
+                  bottom: bottomInset,
+                  height: navHeight,
+                  child: FittedBox(
+                    fit: BoxFit.fill,
+                    child: SizedBox(
+                      width: _designWidth,
+                      height: _navHeight,
+                      child: FarmerBottomNavigation(
+                        activeTab: FarmerNavigationTab.home,
+                        onPublishHarvest: () => Navigator.of(context)
+                            .pushNamed(HarvestPublicationPage.routeName),
+                        onHarvests: () => Navigator.of(context)
+                            .pushNamed(FarmerHarvestsPage.routeName),
+                        onReservations: () => Navigator.of(context)
+                            .pushNamed(ReservationsReceivedPage.routeName),
+                        onProfile: () => Navigator.of(context)
+                            .pushNamed(FarmerProfilePage.routeName),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
 class _FarmerHomeCanvas extends StatelessWidget {
-  const _FarmerHomeCanvas();
+  const _FarmerHomeCanvas({
+    required this.onPublishHarvest,
+    required this.onNotifications,
+    required this.onWantedProducts,
+    required this.onNeeds,
+    required this.onOpportunities,
+  });
 
-  void _openPublication(BuildContext context) {
-    Navigator.of(context).pushNamed(HarvestPublicationPage.routeName);
-  }
+  final VoidCallback onPublishHarvest;
+  final VoidCallback onNotifications;
+  final VoidCallback onWantedProducts;
+  final VoidCallback onNeeds;
+  final VoidCallback onOpportunities;
 
   @override
   Widget build(BuildContext context) {
-    return ColoredBox(
-      color: const Color(0xFFF4F8F3),
-      child: Stack(
-        children: [
-          const _GreenHeader(),
-          const _BalanceCard(),
-          const _StatsGrid(),
-          const _HarvestReminderCard(),
-          _QuickActionsSection(
-            onPublishHarvest: () => _openPublication(context),
-          ),
-          const _LastReservationSection(),
-          _BottomNavigation(
-            onPublishHarvest: () => _openPublication(context),
-          ),
-        ],
-      ),
+    return Stack(
+      children: [
+        const Positioned.fill(
+          child: FarmerGlassBackground(overlayOpacity: 0.42),
+        ),
+        _TopBar(onNotifications: onNotifications),
+        const _BalanceCard(),
+        const _StatsGrid(),
+        const _HarvestReminder(),
+        _QuickActions(
+          onPublishHarvest: onPublishHarvest,
+          onWantedProducts: onWantedProducts,
+          onNeeds: onNeeds,
+          onOpportunities: onOpportunities,
+        ),
+        const _LatestReservation(),
+      ],
     );
   }
 }
 
-class _GreenHeader extends StatelessWidget {
-  const _GreenHeader();
+class _TopBar extends StatelessWidget {
+  const _TopBar({required this.onNotifications});
+
+  final VoidCallback onNotifications;
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
       left: 0,
+      right: 0,
       top: 0,
-      width: 440,
-      height: 276,
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color(0xFF0B9239),
-              Color(0xFF056B2A),
+      height: 66,
+      child: FarmerGlassSurface(
+        color: const Color(0x1AFFFFFF),
+        blurSigma: 16,
+        borderRadius: const BorderRadius.vertical(
+          bottom: Radius.circular(26),
+        ),
+        borderColor: const Color(0x33FFFFFF),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            children: [
+              const SizedBox.square(
+                dimension: 32,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Color(0x33FFFFFF),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.eco_rounded,
+                    color: AppColors.white,
+                    size: 20,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text(
+                  'Yokku Mbey',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+              ),
+              IconButton(
+                tooltip: 'Notifications',
+                onPressed: onNotifications,
+                icon: const Icon(
+                  Icons.notifications_none_rounded,
+                  color: AppColors.white,
+                  size: 22,
+                ),
+              ),
             ],
           ),
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              left: 30,
-              top: 74,
-              right: 92,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      const Expanded(
-                        child: Text(
-                          'Bonjour, Ibrahima',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontSize: 27,
-                            fontWeight: FontWeight.w800,
-                            height: 1.12,
-                            letterSpacing: 0,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        width: 31,
-                        height: 31,
-                        decoration: BoxDecoration(
-                          color: AppColors.white.withValues(alpha: 0.15),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: const Icon(
-                          Icons.touch_app_outlined,
-                          color: AppColors.harvest,
-                          size: 18,
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Voici votre activité du jour',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                      height: 1.2,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    height: 30,
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(
-                      color: AppColors.white.withValues(alpha: 0.13),
-                      borderRadius: BorderRadius.circular(99),
-                      border: Border.all(
-                        color: AppColors.white.withValues(alpha: 0.14),
-                      ),
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.insights_outlined,
-                          color: AppColors.white,
-                          size: 15,
-                        ),
-                        SizedBox(width: 6),
-                        Text(
-                          'Activité du jour',
-                          style: TextStyle(
-                            color: AppColors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            letterSpacing: 0,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Positioned(
-              right: 29,
-              top: 73,
-              child: Stack(
-                clipBehavior: Clip.none,
-                children: [
-                  const SizedBox.square(
-                    dimension: 48,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: Color(0xFF26944D),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.person_outline,
-                        color: AppColors.white,
-                        size: 27,
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                    right: 2,
-                    top: 2,
-                    child: Container(
-                      width: 10,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFFF3B4E),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: const Color(0xFF056D28),
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -234,148 +221,76 @@ class _BalanceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: 38,
-      right: 38,
-      top: 158,
+      left: 18,
+      right: 18,
+      top: 86,
+      height: 124,
       child: Container(
-        height: 160,
-        padding: const EdgeInsets.fromLTRB(21, 16, 21, 15),
+        padding: const EdgeInsets.fromLTRB(20, 17, 18, 15),
         decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: const Color(0xFFE8F1E8)),
+          color: AppColors.white.withValues(alpha: 0.96),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: const Color(0xFFDDEBE1)),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF064B1E).withValues(alpha: 0.16),
-              blurRadius: 34,
-              offset: const Offset(0, 18),
+              color: const Color(0xFF173C28).withValues(alpha: 0.10),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
-        child: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            Row(
+            const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox.square(
-                  dimension: 34,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFE8FAF2),
-                      borderRadius: BorderRadius.all(Radius.circular(12)),
-                    ),
-                    child: Icon(
-                      Icons.account_balance_wallet_outlined,
-                      color: Color(0xFF087C4A),
-                      size: 19,
-                    ),
+                Text(
+                  'Solde disponible',
+                  style: TextStyle(
+                    color: Color(0xFF6C756F),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: Text(
-                    'Solde disponible',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: Color(0xFF6B7890),
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0,
-                    ),
+                SizedBox(height: 6),
+                Text(
+                  '1 250 000 FCFA',
+                  style: TextStyle(
+                    color: Color(0xFF073E22),
+                    fontSize: 26,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
                   ),
                 ),
-                Icon(
-                  Icons.chevron_right,
-                  color: Color(0xFFC8D0DB),
-                  size: 24,
+                Spacer(),
+                Text(
+                  'Disponible après les ventes validées',
+                  style: TextStyle(
+                    color: Color(0xFF7B857E),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
-            SizedBox(height: 7),
-            Text(
-              '1 250 000 FCFA',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: AppColors.ink,
-                fontSize: 28,
-                fontWeight: FontWeight.w800,
-                height: 1,
-                letterSpacing: 0,
-              ),
-            ),
-            SizedBox(height: 5),
-            Text(
-              'Disponible après les ventes validées',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(
-                color: Color(0xFFA2ABB9),
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0,
-              ),
-            ),
-            Spacer(),
-            Row(
-              children: [
-                Expanded(
-                  child: _BalancePill(
-                    label: 'En attente 80 000',
-                    textColor: Color(0xFF007A54),
-                    backgroundColor: Color(0xFFE8FAF2),
-                  ),
+            Positioned(
+              right: -12,
+              top: -9,
+              child: Container(
+                width: 86,
+                height: 86,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF0F5F1),
+                  borderRadius: BorderRadius.circular(18),
                 ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: _BalancePill(
-                    label: 'Commission 7 500',
-                    textColor: Color(0xFFC34209),
-                    backgroundColor: Color(0xFFFFF4E8),
-                  ),
+                child: const Icon(
+                  Icons.account_balance_wallet_outlined,
+                  color: Color(0xFFB9C9BE),
+                  size: 38,
                 ),
-              ],
+              ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BalancePill extends StatelessWidget {
-  const _BalancePill({
-    required this.label,
-    required this.textColor,
-    required this.backgroundColor,
-  });
-
-  final String label;
-  final Color textColor;
-  final Color backgroundColor;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 29,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(99),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: textColor,
-              fontSize: 11,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-            ),
-          ),
         ),
       ),
     );
@@ -388,54 +303,54 @@ class _StatsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Positioned(
-      left: 38,
-      right: 38,
-      top: 334,
+      left: 18,
+      right: 18,
+      top: 232,
       child: Column(
         children: [
           Row(
             children: [
               Expanded(
                 child: _StatCard(
-                  icon: Icons.inventory_2_outlined,
+                  icon: Icons.eco_outlined,
                   label: 'Récoltes actives',
                   value: '12',
-                  color: Color(0xFF087C4A),
-                  backgroundColor: Color(0xFFE8F7EF),
+                  color: Color(0xFF147D40),
+                  tint: Color(0xFFE6F5E9),
                 ),
               ),
-              SizedBox(width: 16),
+              SizedBox(width: 14),
               Expanded(
                 child: _StatCard(
                   icon: Icons.event_available_outlined,
                   label: 'Réservations reçues',
                   value: '18',
-                  color: Color(0xFF2563EB),
-                  backgroundColor: Color(0xFFEEF3FF),
+                  color: Color(0xFF35514A),
+                  tint: Color(0xFFE7F1ED),
                 ),
               ),
             ],
           ),
-          SizedBox(height: 13),
+          SizedBox(height: 14),
           Row(
             children: [
               Expanded(
                 child: _StatCard(
-                  icon: Icons.trending_up,
+                  icon: Icons.shopping_cart_checkout_outlined,
                   label: 'Ventes réalisées',
                   value: '320',
-                  color: Color(0xFFFF6B00),
-                  backgroundColor: Color(0xFFFFF3E8),
+                  color: Color(0xFFE45D24),
+                  tint: Color(0xFFFFEADF),
                 ),
               ),
-              SizedBox(width: 16),
+              SizedBox(width: 14),
               Expanded(
                 child: _StatCard(
                   icon: Icons.account_balance_wallet_outlined,
                   label: 'Paiements en attente',
                   value: '24',
-                  color: Color(0xFF364256),
-                  backgroundColor: Color(0xFFF1F5F9),
+                  color: Color(0xFF7B2CE6),
+                  tint: Color(0xFFF1E5FF),
                 ),
               ),
             ],
@@ -452,167 +367,107 @@ class _StatCard extends StatelessWidget {
     required this.label,
     required this.value,
     required this.color,
-    required this.backgroundColor,
+    required this.tint,
   });
 
   final IconData icon;
   final String label;
   final String value;
   final Color color;
-  final Color backgroundColor;
+  final Color tint;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 76,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFEFF3EF)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF0F172A).withValues(alpha: 0.06),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(13, 11, 10, 10),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox.square(
-                dimension: 36,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.circular(13),
-                  ),
-                  child: Icon(icon, color: color, size: 20),
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      label,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Color(0xFF6B7890),
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                        height: 1.05,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                    Text(
-                      value,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppColors.ink,
-                        fontSize: 19,
-                        fontWeight: FontWeight.w800,
-                        height: 1,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+    return Container(
+      height: 102,
+      padding: const EdgeInsets.fromLTRB(16, 13, 12, 11),
+      decoration: BoxDecoration(
+        color: AppColors.white.withValues(alpha: 0.92),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: AppColors.white.withValues(alpha: 0.86)),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF173C28).withValues(alpha: 0.07),
+            blurRadius: 14,
+            offset: const Offset(0, 6),
           ),
-        ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 45,
+            height: 45,
+            decoration: BoxDecoration(color: tint, shape: BoxShape.circle),
+            child: Icon(icon, color: color, size: 24),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  value,
+                  style: const TextStyle(
+                    color: Color(0xFF17251D),
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    height: 1,
+                  ),
+                ),
+                const SizedBox(height: 7),
+                Text(
+                  label,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(
+                    color: Color(0xFF5F6963),
+                    fontSize: 10,
+                    fontWeight: FontWeight.w500,
+                    height: 1.15,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _HarvestReminderCard extends StatelessWidget {
-  const _HarvestReminderCard();
+class _HarvestReminder extends StatelessWidget {
+  const _HarvestReminder();
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: 38,
-      right: 38,
-      top: 508,
+      left: 18,
+      right: 18,
+      top: 458,
+      height: 52,
       child: Container(
-        height: 72,
-        padding: const EdgeInsets.fromLTRB(16, 12, 14, 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
-          color: const Color(0xFFF5FFFA),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFFB8F3D0)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF087C4A).withValues(alpha: 0.06),
-              blurRadius: 16,
-              offset: const Offset(0, 8),
-            ),
-          ],
+          color: const Color(0xFFE9F4EC).withValues(alpha: 0.94),
+          borderRadius: BorderRadius.circular(13),
+          border: Border.all(color: const Color(0xFFC7DDCC)),
         ),
         child: const Row(
           children: [
-            SizedBox.square(
-              dimension: 40,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(12)),
-                  border: Border.fromBorderSide(
-                    BorderSide(color: Color(0xFFB8F3D0)),
-                  ),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.calendar_month_outlined,
-                    color: Color(0xFF087C4A),
-                    size: 21,
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(width: 13),
+            Icon(Icons.info_outline, color: Color(0xFF315B40), size: 18),
+            SizedBox(width: 12),
             Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '2 récoltes bientôt disponibles',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: AppColors.ink,
-                      fontSize: 15,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    'Pensez à confirmer leurs dates estimées.',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: AppColors.softInk,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ],
+              child: Text(
+                '2 récoltes bientôt disponibles',
+                style: TextStyle(
+                  color: Color(0xFF4B5D51),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-            Icon(Icons.arrow_forward_ios, color: Color(0xFF087C60), size: 18),
           ],
         ),
       ),
@@ -620,57 +475,59 @@ class _HarvestReminderCard extends StatelessWidget {
   }
 }
 
-class _QuickActionsSection extends StatelessWidget {
-  const _QuickActionsSection({required this.onPublishHarvest});
+class _QuickActions extends StatelessWidget {
+  const _QuickActions({
+    required this.onPublishHarvest,
+    required this.onWantedProducts,
+    required this.onNeeds,
+    required this.onOpportunities,
+  });
 
   final VoidCallback onPublishHarvest;
+  final VoidCallback onWantedProducts;
+  final VoidCallback onNeeds;
+  final VoidCallback onOpportunities;
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: 36,
-      right: 36,
-      top: 598,
+      left: 18,
+      right: 18,
+      top: 548,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Actions rapides',
             style: TextStyle(
-              color: AppColors.ink,
-              fontSize: 20,
+              color: AppColors.white,
+              fontSize: 18,
               fontWeight: FontWeight.w800,
-              letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 17),
+          const SizedBox(height: 18),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               _QuickAction(
-                icon: Icons.add,
+                icon: Icons.add_circle_outline,
                 label: 'Ajouter\nune récolte',
-                color: const Color(0xFF007A54),
-                backgroundColor: const Color(0xFFE6F2EC),
                 onTap: onPublishHarvest,
               ),
-              const _QuickAction(
-                icon: Icons.search,
+              _QuickAction(
+                icon: Icons.search_rounded,
                 label: 'Produits\nrecherchés',
-                color: Color(0xFFFF6B00),
-                backgroundColor: Color(0xFFFFF3E8),
+                onTap: onWantedProducts,
               ),
-              const _QuickAction(
-                icon: Icons.chat_bubble_outline,
-                label: 'Mes\nbesoins',
-                color: Color(0xFF2563EB),
-                backgroundColor: Color(0xFFEEF3FF),
+              _QuickAction(
+                icon: Icons.receipt_long_outlined,
+                label: 'Mes besoins',
+                onTap: onNeeds,
               ),
-              const _QuickAction(
-                icon: Icons.business_outlined,
+              _QuickAction(
+                icon: Icons.trending_up_rounded,
                 label: 'Opportunités',
-                color: Color(0xFF364256),
-                backgroundColor: Color(0xFFF1F5F9),
+                onTap: onOpportunities,
               ),
             ],
           ),
@@ -684,58 +541,50 @@ class _QuickAction extends StatelessWidget {
   const _QuickAction({
     required this.icon,
     required this.label,
-    required this.color,
-    required this.backgroundColor,
-    this.onTap,
+    required this.onTap,
   });
 
   final IconData icon;
   final String label;
-  final Color color;
-  final Color backgroundColor;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 80,
+      width: 88,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(14),
           child: Column(
             children: [
-              SizedBox.square(
-                dimension: 60,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: backgroundColor,
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.white, width: 2),
-                    boxShadow: [
-                      BoxShadow(
-                        color: color.withValues(alpha: 0.08),
-                        blurRadius: 14,
-                        offset: const Offset(0, 7),
-                      ),
-                    ],
-                  ),
-                  child: Icon(icon, color: color, size: 27),
+              Container(
+                width: 58,
+                height: 58,
+                decoration: BoxDecoration(
+                  color: AppColors.white.withValues(alpha: 0.94),
+                  borderRadius: BorderRadius.circular(15),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.08),
+                      blurRadius: 12,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
                 ),
+                child: Icon(icon, color: const Color(0xFF263D30), size: 25),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 9),
               Text(
                 label,
                 maxLines: 2,
-                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
-                  color: AppColors.ink,
+                  color: AppColors.white,
                   fontSize: 10,
-                  fontWeight: FontWeight.w800,
-                  height: 1.08,
-                  letterSpacing: 0,
+                  fontWeight: FontWeight.w600,
+                  height: 1.15,
                 ),
               ),
             ],
@@ -746,95 +595,97 @@ class _QuickAction extends StatelessWidget {
   }
 }
 
-class _LastReservationSection extends StatelessWidget {
-  const _LastReservationSection();
+class _LatestReservation extends StatelessWidget {
+  const _LatestReservation();
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
-      left: 36,
-      right: 36,
-      top: 733,
+      left: 18,
+      right: 18,
+      top: 736,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             'Dernière réservation',
             style: TextStyle(
-              color: AppColors.ink,
-              fontSize: 21,
+              color: AppColors.white,
+              fontSize: 18,
               fontWeight: FontWeight.w800,
-              letterSpacing: 0,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: 18),
           Container(
-            height: 82,
-            padding: const EdgeInsets.fromLTRB(16, 13, 15, 13),
+            height: 112,
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: const Color(0xFFF0F2F5)),
+              color: AppColors.white.withValues(alpha: 0.95),
+              borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.06),
-                  blurRadius: 22,
-                  offset: const Offset(0, 10),
+                  color: const Color(0xFF173C28).withValues(alpha: 0.10),
+                  blurRadius: 18,
+                  offset: const Offset(0, 7),
                 ),
               ],
             ),
-            child: const Row(
+            child: Row(
               children: [
-                SizedBox.square(
-                  dimension: 50,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: Color(0xFFFFF6EA),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(9),
-                      child: Image(
-                        image: AssetImage(AppAssets.buyerTomato),
-                        fit: BoxFit.contain,
-                      ),
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.asset(
+                    AppAssets.farmerTomatoHarvest,
+                    width: 92,
+                    height: 92,
+                    fit: BoxFit.cover,
                   ),
                 ),
-                SizedBox(width: 12),
-                Expanded(
+                const SizedBox(width: 14),
+                const Expanded(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Tomate fraîche • 200 kg',
+                        'Tomates fraîches',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
-                          color: AppColors.ink,
+                          color: Color(0xFF18251D),
                           fontSize: 15,
                           fontWeight: FontWeight.w800,
-                          letterSpacing: 0,
                         ),
                       ),
-                      SizedBox(height: 5),
+                      SizedBox(height: 6),
                       Text(
-                        'Acompte reçu : 20 000 FCFA',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        '500 kg',
                         style: TextStyle(
-                          color: Color(0xFF9CA3AF),
-                          fontSize: 13,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0,
+                          color: Color(0xFF6E7872),
+                          fontSize: 11,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(width: 8),
-                _ReservationStatus(),
+                const SizedBox(width: 8),
+                const Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    _ReservationStatus(),
+                    SizedBox(height: 14),
+                    Text(
+                      '150 000 F',
+                      style: TextStyle(
+                        color: Color(0xFF315B40),
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
@@ -849,148 +700,19 @@ class _ReservationStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 29,
-      width: 82,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: const Color(0xFFE8FAF2),
-          borderRadius: BorderRadius.circular(99),
-        ),
-        child: const Center(
-          child: Text(
-            'Acceptée',
-            style: TextStyle(
-              color: Color(0xFF007A54),
-              fontSize: 12,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-            ),
-          ),
-        ),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: const Color(0xFFDFF5E5),
+        borderRadius: BorderRadius.circular(99),
       ),
-    );
-  }
-}
-
-class _BottomNavigation extends StatelessWidget {
-  const _BottomNavigation({required this.onPublishHarvest});
-
-  final VoidCallback onPublishHarvest;
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: 0,
-      right: 0,
-      bottom: 0,
-      child: SizedBox(
-        height: 68,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: AppColors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
-                blurRadius: 16,
-                offset: const Offset(0, -8),
-              ),
-            ],
-          ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _BottomNavItem(
-                    icon: Icons.home,
-                    label: 'Accueil',
-                    isActive: true,
-                  ),
-                  _BottomNavItem(
-                    icon: Icons.assignment_turned_in_outlined,
-                    label: 'Récoltes',
-                  ),
-                  SizedBox(width: 58),
-                  _BottomNavItem(
-                    icon: Icons.favorite_border,
-                    label: 'Réservations',
-                  ),
-                  _BottomNavItem(
-                    icon: Icons.person_outline,
-                    label: 'Profil',
-                  ),
-                ],
-              ),
-              Positioned(
-                left: 191,
-                top: -34,
-                child: GestureDetector(
-                  onTap: onPublishHarvest,
-                  child: Container(
-                    width: 62,
-                    height: 62,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF087C4A),
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.white, width: 4),
-                      boxShadow: [
-                        BoxShadow(
-                          color:
-                              const Color(0xFF087C4A).withValues(alpha: 0.22),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child:
-                        const Icon(Icons.add, color: AppColors.white, size: 31),
-                  ),
-                ),
-              ),
-            ],
-          ),
+      child: const Text(
+        'ACCEPTÉE',
+        style: TextStyle(
+          color: Color(0xFF238044),
+          fontSize: 8,
+          fontWeight: FontWeight.w800,
         ),
-      ),
-    );
-  }
-}
-
-class _BottomNavItem extends StatelessWidget {
-  const _BottomNavItem({
-    required this.icon,
-    required this.label,
-    this.isActive = false,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isActive ? const Color(0xFF087C4A) : const Color(0xFF95A2B5);
-
-    return SizedBox(
-      width: 80,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 22),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: color,
-              fontSize: 10,
-              fontWeight: isActive ? FontWeight.w800 : FontWeight.w400,
-              letterSpacing: 0,
-            ),
-          ),
-        ],
       ),
     );
   }

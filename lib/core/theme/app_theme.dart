@@ -8,7 +8,6 @@ abstract final class AppTheme {
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(seedColor: AppColors.leaf),
       scaffoldBackgroundColor: AppColors.forest,
-      fontFamily: 'serif',
     );
   }
 }

@@ -13,15 +13,16 @@ void main() {
       ),
     );
 
-    expect(find.text('Bonjour, Ibrahima'), findsOneWidget);
+    expect(find.text('Yokku Mbey'), findsOneWidget);
     expect(find.text('Solde disponible'), findsOneWidget);
     expect(find.text('1 250 000 FCFA'), findsOneWidget);
     expect(find.text('Récoltes actives'), findsOneWidget);
     expect(find.text('Ajouter\nune récolte'), findsOneWidget);
     expect(find.text('Actions rapides'), findsOneWidget);
     expect(find.text('Dernière réservation'), findsOneWidget);
-    expect(find.text('Tomate fraîche • 200 kg'), findsOneWidget);
-    expect(find.byType(SingleChildScrollView), findsNothing);
+    expect(find.text('Tomates fraîches'), findsOneWidget);
+    expect(find.text('500 kg'), findsOneWidget);
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
     expect(find.byType(ListView), findsNothing);
     expect(find.byType(GridView), findsNothing);
   });
@@ -36,7 +37,7 @@ void main() {
       ),
     );
 
-    expect(find.text('Bonjour, Ibrahima'), findsOneWidget);
+    expect(find.text('Yokku Mbey'), findsOneWidget);
     expect(find.text('Solde disponible'), findsOneWidget);
   });
 
@@ -49,13 +50,14 @@ void main() {
       ),
     );
 
-    expect(find.text('Bonjour, Amadou 👋'), findsOneWidget);
-    expect(find.text('Produits disponibles maintenant'), findsOneWidget);
-    expect(find.text('Tomate fraiche'), findsOneWidget);
-    expect(find.text('Oignon local'), findsOneWidget);
-    expect(find.text('Catégories populaires'), findsOneWidget);
+    expect(find.text('Bonjour,'), findsOneWidget);
+    expect(find.text('Amadou'), findsOneWidget);
+    expect(find.text('Produits disponibles'), findsOneWidget);
+    expect(find.text('Tomates Fraîches'), findsOneWidget);
+    expect(find.text('Oignons Locaux'), findsOneWidget);
+    expect(find.text('Catégories'), findsOneWidget);
     expect(find.text('Accueil'), findsOneWidget);
-    expect(find.byType(SingleChildScrollView), findsNothing);
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
     expect(find.byType(ListView), findsNothing);
     expect(find.byType(GridView), findsNothing);
   });

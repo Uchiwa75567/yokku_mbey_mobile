@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../auth/presentation/widgets/auth_premium_surface.dart';
 import '../../../home/presentation/pages/profile_home_page.dart';
 import '../../domain/entities/profile_options.dart';
 import '../widgets/profile_option_tile.dart';
@@ -34,38 +35,56 @@ class _ProfileSelectionPageState extends State<ProfileSelectionPage> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: AppColors.white,
-        body: SafeArea(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 390),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(39, 69, 40, 39),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    const _ProfileHeader(),
-                    const SizedBox(height: 32),
-                    ...List.generate(ProfileOptions.items.length, (index) {
-                      return Padding(
-                        padding: EdgeInsets.only(
-                          bottom:
-                              index == ProfileOptions.items.length - 1 ? 0 : 15,
+        backgroundColor: AppColors.forestDeep,
+        body: Stack(
+          children: [
+            const Positioned.fill(
+              child: AuthPremiumBackground(overlayOpacity: 0.34),
+            ),
+            SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return Center(
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: SizedBox(
+                        width: 350,
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(8, 18, 8, 16),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              const _ProfileHeader(),
+                              const SizedBox(height: 18),
+                              ...List.generate(
+                                ProfileOptions.items.length,
+                                (index) => Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom:
+                                        index == ProfileOptions.items.length - 1
+                                            ? 0
+                                            : 9,
+                                  ),
+                                  child: ProfileOptionTile(
+                                    option: ProfileOptions.items[index],
+                                    isSelected: index == _selectedIndex,
+                                    onTap: () => _selectProfile(index),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              _NextButton(onPressed: _openHome),
+                            ],
+                          ),
                         ),
-                        child: ProfileOptionTile(
-                          option: ProfileOptions.items[index],
-                          isSelected: index == _selectedIndex,
-                          onTap: () => _selectProfile(index),
-                        ),
-                      );
-                    }),
-                    const Spacer(),
-                    _NextButton(onPressed: _openHome),
-                  ],
-                ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
@@ -78,24 +97,25 @@ class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
           'Vous êtes ?',
           style: TextStyle(
-            color: Colors.black,
-            fontSize: 30,
+            color: AppColors.white,
+            fontSize: 22,
             fontWeight: FontWeight.w800,
             height: 1.1,
             letterSpacing: 0,
           ),
         ),
-        SizedBox(height: 20),
+        SizedBox(height: 7),
         Text(
-          'Choisissez votre profil pour\npersonnaliser votre expérience',
+          'Choisissez votre profil pour personnaliser\nvotre expérience',
+          textAlign: TextAlign.center,
           style: TextStyle(
-            color: AppColors.softInk,
-            fontSize: 18,
+            color: Color(0xFFE1EAE3),
+            fontSize: 11,
             fontWeight: FontWeight.w400,
             height: 1.25,
             letterSpacing: 0,
@@ -114,19 +134,18 @@ class _NextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 60,
+      height: 52,
       child: FilledButton(
         onPressed: onPressed,
         style: FilledButton.styleFrom(
           backgroundColor: const Color(0xFF087C1E),
           foregroundColor: AppColors.white,
-          elevation: 8,
-          shadowColor: Colors.black.withValues(alpha: 0.22),
+          elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(9),
+            borderRadius: BorderRadius.circular(10),
           ),
           textStyle: const TextStyle(
-            fontSize: 18,
+            fontSize: 15,
             fontWeight: FontWeight.w700,
             letterSpacing: 0,
           ),

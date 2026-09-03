@@ -6,14 +6,30 @@ import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../profile_selection/presentation/pages/profile_selection_page.dart';
+import '../widgets/auth_premium_surface.dart';
 import '../widgets/otp_code_boxes.dart';
 import '../widgets/verification_keypad.dart';
 
 class VerificationPage extends StatefulWidget {
-  const VerificationPage({super.key});
+  const VerificationPage({
+    super.key,
+    this.phoneNumber = defaultPhoneNumber,
+  });
 
   static const String routeName = '/verification';
+  static const String defaultPhoneNumber = '+221 70 123 45 67';
   static const Duration verificationSuccessDelay = Duration(milliseconds: 250);
+
+  final String phoneNumber;
+
+  static VerificationPage fromRoute(BuildContext context) {
+    final arguments = ModalRoute.of(context)?.settings.arguments;
+    return VerificationPage(
+      phoneNumber: arguments is String && arguments.trim().isNotEmpty
+          ? arguments
+          : defaultPhoneNumber,
+    );
+  }
 
   @override
   State<VerificationPage> createState() => _VerificationPageState();
@@ -23,6 +39,7 @@ class _VerificationPageState extends State<VerificationPage> {
   static const int _otpLength = 4;
 
   String _otpCode = '';
+  bool _isVerifying = false;
   Timer? _successTimer;
 
   @override
@@ -37,7 +54,10 @@ class _VerificationPageState extends State<VerificationPage> {
     }
 
     final updatedCode = '$_otpCode$digit';
-    setState(() => _otpCode = updatedCode);
+    setState(() {
+      _otpCode = updatedCode;
+      _isVerifying = updatedCode.length == _otpLength;
+    });
 
     if (updatedCode.length == _otpLength) {
       _successTimer?.cancel();
@@ -54,7 +74,10 @@ class _VerificationPageState extends State<VerificationPage> {
     }
 
     _successTimer?.cancel();
-    setState(() => _otpCode = _otpCode.substring(0, _otpCode.length - 1));
+    setState(() {
+      _otpCode = _otpCode.substring(0, _otpCode.length - 1);
+      _isVerifying = false;
+    });
   }
 
   void _openProfileSelection() {
@@ -71,13 +94,22 @@ class _VerificationPageState extends State<VerificationPage> {
       value: SystemUiOverlayStyle.dark,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
-        backgroundColor: AppColors.white,
-        body: SafeArea(
-          child: _VerificationContent(
-            code: _otpCode,
-            onDigitPressed: _addDigit,
-            onBackspacePressed: _removeLastDigit,
-          ),
+        backgroundColor: AppColors.forestDeep,
+        body: Stack(
+          children: [
+            const Positioned.fill(
+              child: AuthPremiumBackground(overlayOpacity: 0.24),
+            ),
+            SafeArea(
+              child: _VerificationContent(
+                code: _otpCode,
+                phoneNumber: widget.phoneNumber,
+                isVerifying: _isVerifying,
+                onDigitPressed: _addDigit,
+                onBackspacePressed: _removeLastDigit,
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -87,11 +119,15 @@ class _VerificationPageState extends State<VerificationPage> {
 class _VerificationContent extends StatelessWidget {
   const _VerificationContent({
     required this.code,
+    required this.phoneNumber,
+    required this.isVerifying,
     required this.onDigitPressed,
     required this.onBackspacePressed,
   });
 
   final String code;
+  final String phoneNumber;
+  final bool isVerifying;
   final ValueChanged<String> onDigitPressed;
   final VoidCallback onBackspacePressed;
 
@@ -99,73 +135,79 @@ class _VerificationContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isCompact = constraints.maxHeight < 820;
-        final contentWidth = math.min(constraints.maxWidth - 48, 390.0);
-        final topGap = isCompact ? 34.0 : 58.0;
-        final titleToDescriptionGap = isCompact ? 10.0 : 18.0;
-        final descriptionToCodeGap = isCompact ? 22.0 : 34.0;
-        final codeToResendGap = isCompact ? 22.0 : 34.0;
-        final resendToKeypadGap = isCompact ? 22.0 : 42.0;
+        final isCompact = constraints.maxHeight < 780;
+        final contentWidth = math.min(
+          math.max(constraints.maxWidth - 24, 280.0),
+          350.0,
+        );
 
         return Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.topCenter,
-              child: SizedBox(
-                width: contentWidth,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.center,
+            child: SizedBox(
+              width: contentWidth,
+              child: AuthPremiumCard(
+                color: const Color(0xB30E2117),
+                borderColor: const Color(0x66FFFFFF),
+                padding: EdgeInsets.fromLTRB(
+                  18,
+                  isCompact ? 18 : 22,
+                  18,
+                  isCompact ? 16 : 20,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: topGap),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 19),
-                      child: Text(
-                        'Entrez le code\nde vérification',
-                        style: TextStyle(
-                          color: AppColors.ink,
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
-                          height: 1.1,
-                          letterSpacing: 0,
-                        ),
+                    const _VerificationHeader(),
+                    SizedBox(height: isCompact ? 13 : 17),
+                    const _SecurityMark(),
+                    const SizedBox(height: 14),
+                    const Text(
+                      'Entrez le code de\nvérification',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w900,
+                        height: 1.08,
+                        letterSpacing: -0.35,
                       ),
                     ),
-                    SizedBox(height: titleToDescriptionGap),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 19),
-                      child: Text(
-                        'Nous avons envoyé un code à\n+221 70 123 45 67',
-                        style: TextStyle(
-                          color: AppColors.softInk,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          height: 1.55,
-                          letterSpacing: 0,
-                        ),
+                    const SizedBox(height: 12),
+                    Text(
+                      'Nous avons envoyé un code à $phoneNumber',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        color: Color(0xFFD8E4DB),
+                        fontSize: 11,
+                        fontWeight: FontWeight.w500,
+                        height: 1.4,
                       ),
                     ),
-                    SizedBox(height: descriptionToCodeGap),
+                    SizedBox(height: isCompact ? 18 : 22),
                     Padding(
-                      padding: const EdgeInsets.only(left: 19),
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: OtpCodeBoxes(code: code),
                     ),
-                    SizedBox(height: codeToResendGap),
-                    const Center(
-                      child: Text(
-                        'Renvoyer le code dans 00:45',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: AppColors.softInk,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          letterSpacing: 0,
-                        ),
-                      ),
+                    const SizedBox(height: 17),
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 180),
+                      child: isVerifying
+                          ? const _VerifyingStatus(key: ValueKey('verifying'))
+                          : const Text(
+                              'Renvoyer le code dans 00:45',
+                              key: ValueKey('resend'),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Color(0xFFD8E4DB),
+                                fontSize: 11,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                     ),
-                    SizedBox(height: resendToKeypadGap),
+                    SizedBox(height: isCompact ? 15 : 20),
                     VerificationKeypad(
                       onDigitPressed: onDigitPressed,
                       onBackspacePressed: onBackspacePressed,
@@ -177,6 +219,97 @@ class _VerificationContent extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _VerificationHeader extends StatelessWidget {
+  const _VerificationHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 34,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Align(
+            alignment: Alignment.centerLeft,
+            child: SizedBox.square(
+              dimension: 34,
+              child: IconButton(
+                tooltip: 'Retour',
+                padding: EdgeInsets.zero,
+                onPressed: () => Navigator.of(context).maybePop(),
+                style: IconButton.styleFrom(
+                  backgroundColor: const Color(0x33FFFFFF),
+                  foregroundColor: AppColors.white,
+                  side: const BorderSide(color: Color(0x55FFFFFF)),
+                ),
+                icon: const Icon(Icons.arrow_back_rounded, size: 18),
+              ),
+            ),
+          ),
+          const AuthBrandMark(compact: true, onDark: true),
+        ],
+      ),
+    );
+  }
+}
+
+class _SecurityMark extends StatelessWidget {
+  const _SecurityMark();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: SizedBox.square(
+        dimension: 50,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: AppColors.leafLight,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.lock_outline_rounded,
+            color: AppColors.leaf,
+            size: 24,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _VerifyingStatus extends StatelessWidget {
+  const _VerifyingStatus({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        SizedBox.square(
+          dimension: 15,
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: AppColors.leaf,
+          ),
+        ),
+        SizedBox(width: 9),
+        Flexible(
+          child: Text(
+            'Vérification en cours…',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              color: Color(0xFFB9F2C8),
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

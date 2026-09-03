@@ -1,53 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
 
 class PhoneNumberField extends StatelessWidget {
-  const PhoneNumberField({super.key});
+  const PhoneNumberField({
+    super.key,
+    this.controller,
+    this.onChanged,
+  });
+
+  final TextEditingController? controller;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox(
-      height: 58,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          border: Border.fromBorderSide(
-            BorderSide(color: AppColors.border),
+    return SizedBox(
+      height: 50,
+      child: TextField(
+        controller: controller,
+        onChanged: onChanged,
+        keyboardType: TextInputType.phone,
+        textInputAction: TextInputAction.done,
+        autofillHints: const [AutofillHints.telephoneNumberNational],
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9 ]')),
+          LengthLimitingTextInputFormatter(12),
+        ],
+        decoration: InputDecoration(
+          filled: true,
+          fillColor: AppColors.white,
+          prefixIcon: const _CountryCode(),
+          prefixIconConstraints: const BoxConstraints(
+            minWidth: 102,
+            minHeight: 50,
           ),
-          borderRadius: BorderRadius.all(Radius.circular(11)),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+          hintText: '77 000 00 00',
+          hintStyle: const TextStyle(
+            color: AppColors.inputHint,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: AppColors.border),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: const BorderSide(color: AppColors.leaf, width: 1.6),
+          ),
         ),
-        child: Row(
-          children: [
-            _CountryCode(),
-            VerticalDivider(
-              width: 1,
-              thickness: 1,
-              color: AppColors.border,
-            ),
-            Expanded(
-              child: TextField(
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 18),
-                  hintText: '70 123 45 67',
-                  hintStyle: TextStyle(
-                    color: AppColors.inputHint,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 0,
-                  ),
-                ),
-                style: TextStyle(
-                  color: AppColors.ink,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0,
-                ),
-              ),
-            ),
-          ],
+        style: const TextStyle(
+          color: AppColors.ink,
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
         ),
       ),
     );
@@ -60,19 +68,27 @@ class _CountryCode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      width: 97,
+      width: 102,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SizedBox(width: 11),
           _SenegalFlag(),
-          SizedBox(width: 10),
+          SizedBox(width: 7),
           Text(
             '+221',
             style: TextStyle(
               color: AppColors.ink,
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              letterSpacing: 0,
+              fontSize: 13,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+          Spacer(),
+          SizedBox(
+            height: 24,
+            child: VerticalDivider(
+              width: 1,
+              thickness: 1,
+              color: AppColors.border,
             ),
           ),
         ],
@@ -90,8 +106,8 @@ class _SenegalFlag extends StatelessWidget {
       borderRadius: BorderRadius.circular(2),
       child: Image.asset(
         AppAssets.senegalFlag,
-        width: 20,
-        height: 16,
+        width: 19,
+        height: 15,
         fit: BoxFit.cover,
       ),
     );

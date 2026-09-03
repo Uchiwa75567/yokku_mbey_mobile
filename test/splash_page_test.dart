@@ -37,9 +37,24 @@ void main() {
     await tester.pump(SplashPage.transitionDuration);
 
     expect(find.byType(OnboardingSplashView), findsOneWidget);
-    expect(find.textContaining('YOKKU MBEY'), findsOneWidget);
-    expect(find.text('Suivant'), findsOneWidget);
+    expect(
+      find.text('Bienvenue sur\nYOKKU MBEY', findRichText: true),
+      findsOneWidget,
+    );
+    expect(find.text('SUIVANT'), findsOneWidget);
     expect(find.text('Passer'), findsOneWidget);
+
+    final background = tester.widget<Image>(
+      find.byWidgetPredicate(
+        (widget) =>
+            widget is Image &&
+            widget.image == const AssetImage(AppAssets.onboardingBackground),
+      ),
+    );
+    expect(
+      background.image,
+      const AssetImage(AppAssets.onboardingBackground),
+    );
   });
 
   testWidgets('shows the second onboarding slide after tapping next', (
@@ -49,7 +64,7 @@ void main() {
 
     await tester.pump(SplashPage.firstStageDuration);
     await tester.pump(SplashPage.transitionDuration);
-    await tester.tap(find.text('Suivant'));
+    await tester.tap(find.text('SUIVANT'));
     await tester.pumpAndSettle();
 
     expect(
@@ -69,9 +84,9 @@ void main() {
 
     await tester.pump(SplashPage.firstStageDuration);
     await tester.pump(SplashPage.transitionDuration);
-    await tester.tap(find.text('Suivant'));
+    await tester.tap(find.text('SUIVANT'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Suivant'));
+    await tester.tap(find.text('SUIVANT'));
     await tester.pumpAndSettle();
 
     expect(
@@ -96,14 +111,50 @@ void main() {
 
     await tester.pump(SplashPage.firstStageDuration);
     await tester.pump(SplashPage.transitionDuration);
-    await tester.tap(find.text('Suivant'));
+    await tester.tap(find.text('SUIVANT'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Suivant'));
+    await tester.tap(find.text('SUIVANT'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Suivant'));
+    await tester.tap(find.text('SUIVANT'));
     await tester.pumpAndSettle();
 
     expect(find.byType(LoginPage), findsOneWidget);
     expect(find.text('Bienvenue !'), findsOneWidget);
+  });
+
+  testWidgets('skips the onboarding directly to login', (tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        routes: {
+          LoginPage.routeName: (_) => const LoginPage(),
+        },
+        home: const OnboardingSplashView(),
+      ),
+    );
+
+    await tester.tap(find.text('Passer'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(LoginPage), findsOneWidget);
+    expect(find.byType(OnboardingSplashView), findsNothing);
+  });
+
+  testWidgets('stays usable on a compact phone viewport', (tester) async {
+    tester.view.physicalSize = const Size(320, 520);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(() {
+      tester.view.resetPhysicalSize();
+      tester.view.resetDevicePixelRatio();
+    });
+
+    await tester.pumpWidget(
+      const MaterialApp(home: OnboardingSplashView()),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
+    expect(find.text('SUIVANT'), findsOneWidget);
+    expect(find.text('Passer'), findsOneWidget);
+    expect(tester.takeException(), isNull);
   });
 }

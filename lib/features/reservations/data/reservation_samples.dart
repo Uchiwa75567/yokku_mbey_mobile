@@ -1,0 +1,40 @@
+import '../domain/entities/reservation.dart';
+
+const List<Reservation> reservationSamples = [
+  Reservation(
+    id: 'market-central-dakar',
+    buyerName: 'Marché Central Dakar',
+    productName: 'Tomate fraîche',
+    quantityKg: 200,
+    unitPrice: 400,
+    depositAmount: 20000,
+    paymentDetails: 'Acompte 20 000',
+    status: ReservationStatus.newRequest,
+    transactionCount: 14,
+    recoveryMode: 'Retrait chez le producteur',
+  ),
+  Reservation(
+    id: 'sokhna-distribution',
+    buyerName: 'Sokhna Distribution',
+    productName: 'Oignon local',
+    quantityKg: 500,
+    unitPrice: 350,
+    depositAmount: 175000,
+    paymentDetails: 'Paiement complet',
+    status: ReservationStatus.accepted,
+    transactionCount: 24,
+    recoveryMode: 'Livraison chez l’acheteur',
+  ),
+  Reservation(
+    id: 'restaurant-teranga',
+    buyerName: 'Restaurant Teranga',
+    productName: 'Tomate fraîche',
+    quantityKg: 80,
+    unitPrice: 400,
+    depositAmount: 0,
+    paymentDetails: 'Sans acompte',
+    status: ReservationStatus.pending,
+    transactionCount: 9,
+    recoveryMode: 'Retrait chez le producteur',
+  ),
+];

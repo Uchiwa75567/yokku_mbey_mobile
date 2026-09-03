@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'app_routes.dart';
+import '../core/theme/app_colors.dart';
 import '../core/theme/app_theme.dart';
+import 'app_routes.dart';
 
 class YokkuMbeyApp extends StatelessWidget {
   const YokkuMbeyApp({super.key});
@@ -14,6 +15,16 @@ class YokkuMbeyApp extends StatelessWidget {
       theme: AppTheme.light,
       routes: AppRoutes.routes,
       initialRoute: AppRoutes.splash,
+      builder: (context, child) {
+        return ColoredBox(
+          color: AppColors.forestDeep,
+          child: SafeArea(
+            top: true,
+            bottom: false,
+            child: child ?? const SizedBox.shrink(),
+          ),
+        );
+      },
     );
   }
 }

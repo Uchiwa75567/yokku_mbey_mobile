@@ -9,18 +9,28 @@ class GoogleSignInButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 58,
+      height: 50,
       child: OutlinedButton(
-        onPressed: () {},
+        onPressed: () {
+          ScaffoldMessenger.of(context)
+            ..hideCurrentSnackBar()
+            ..showSnackBar(
+              const SnackBar(
+                content: Text('La connexion Google sera bientôt disponible.'),
+                behavior: SnackBarBehavior.floating,
+              ),
+            );
+        },
         style: OutlinedButton.styleFrom(
           foregroundColor: const Color(0xFF374151),
+          backgroundColor: AppColors.white,
+          overlayColor: AppColors.surfaceGreen,
           padding: const EdgeInsets.symmetric(horizontal: 12),
           side: const BorderSide(color: AppColors.border),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           textStyle: const TextStyle(
-            fontSize: 16,
+            fontSize: 13,
             fontWeight: FontWeight.w700,
             letterSpacing: 0,
           ),
@@ -30,7 +40,7 @@ class GoogleSignInButton extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             _GoogleMark(),
-            SizedBox(width: 10),
+            SizedBox(width: 9),
             Flexible(
               child: Text(
                 'Se connecter avec Google',
@@ -52,8 +62,8 @@ class _GoogleMark extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       AppAssets.googleLogo,
-      width: 24,
-      height: 24,
+      width: 19,
+      height: 19,
       fit: BoxFit.contain,
     );
   }

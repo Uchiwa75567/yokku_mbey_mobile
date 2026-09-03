@@ -33,42 +33,33 @@ class VerificationKeypad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 390,
-      child: ColoredBox(
-        color: AppColors.keypadBackground,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(8, 8, 8, 18),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final buttonHeight =
-                  ((constraints.maxWidth - 16) / 3 / 1.67).clamp(50.0, 72.0);
+      width: 314,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          const buttonHeight = 52.0;
 
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...List.generate(_rows.length, (index) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: index == 2 ? 0 : 8),
-                      child: _KeypadRow(
-                        items: _rows[index],
-                        height: buttonHeight,
-                        onDigitPressed: onDigitPressed,
-                      ),
-                    );
-                  }),
-                  const SizedBox(height: 8),
-                  _BottomKeypadRow(
-                    height: 55,
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...List.generate(_rows.length, (index) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: index == 2 ? 0 : 8),
+                  child: _KeypadRow(
+                    items: _rows[index],
+                    height: buttonHeight,
                     onDigitPressed: onDigitPressed,
-                    onBackspacePressed: onBackspacePressed,
                   ),
-                  const SizedBox(height: 24),
-                  const _SystemHomeIndicator(),
-                ],
-              );
-            },
-          ),
-        ),
+                );
+              }),
+              const SizedBox(height: 8),
+              _BottomKeypadRow(
+                height: buttonHeight,
+                onDigitPressed: onDigitPressed,
+                onBackspacePressed: onBackspacePressed,
+              ),
+            ],
+          );
+        },
       ),
     );
   }
@@ -96,7 +87,7 @@ class _KeypadRow extends StatelessWidget {
           return Expanded(
             child: Padding(
               padding:
-                  EdgeInsets.only(right: index == items.length - 1 ? 0 : 8),
+                  EdgeInsets.only(right: index == items.length - 1 ? 0 : 18),
               child: _KeypadButton(
                 item: item,
                 onPressed: () => onDigitPressed(item.value),
@@ -127,14 +118,14 @@ class _BottomKeypadRow extends StatelessWidget {
       child: Row(
         children: [
           const Expanded(child: SizedBox.expand()),
-          const SizedBox(width: 8),
+          const SizedBox(width: 18),
           Expanded(
             child: _KeypadButton(
               item: const _KeypadItem('0'),
               onPressed: () => onDigitPressed('0'),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 18),
           Expanded(child: _BackspaceButton(onPressed: onBackspacePressed)),
         ],
       ),
@@ -154,38 +145,34 @@ class _KeypadButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.white,
-      borderRadius: const BorderRadius.all(Radius.circular(7)),
+      color: Colors.transparent,
+      elevation: 0,
+      shadowColor: AppColors.forest.withValues(alpha: 0.08),
+      borderRadius: const BorderRadius.all(Radius.circular(99)),
       child: InkWell(
-        borderRadius: const BorderRadius.all(Radius.circular(7)),
+        borderRadius: const BorderRadius.all(Radius.circular(99)),
+        overlayColor: WidgetStatePropertyAll(
+          AppColors.leaf.withValues(alpha: 0.08),
+        ),
         onTap: onPressed,
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                item.value,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  height: 1,
-                  letterSpacing: 0,
-                ),
-              ),
-              if (item.letters != null) ...[
-                const SizedBox(height: 6),
+        child: Semantics(
+          button: true,
+          label: 'Chiffre ${item.value}',
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
                 Text(
-                  item.letters!,
+                  item.value,
                   style: const TextStyle(
-                    color: AppColors.softInk,
-                    fontSize: 10,
+                    color: AppColors.white,
+                    fontSize: 19,
                     fontWeight: FontWeight.w800,
-                    letterSpacing: 1.5,
+                    height: 1,
                   ),
                 ),
               ],
-            ],
+            ),
           ),
         ),
       ),
@@ -200,29 +187,22 @@ class _BackspaceButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onPressed,
-      icon: const Icon(
-        Icons.backspace_outlined,
-        color: AppColors.ink,
-      ),
-      iconSize: 24,
-    );
-  }
-}
-
-class _SystemHomeIndicator extends StatelessWidget {
-  const _SystemHomeIndicator();
-
-  @override
-  Widget build(BuildContext context) {
-    return const SizedBox(
-      width: 128,
-      height: 5,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: AppColors.systemIndicator,
-          borderRadius: BorderRadius.all(Radius.circular(99)),
+    return Material(
+      color: Colors.transparent,
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        onTap: onPressed,
+        borderRadius: BorderRadius.circular(14),
+        child: Semantics(
+          button: true,
+          label: 'Effacer le dernier chiffre',
+          child: const Center(
+            child: Icon(
+              Icons.backspace_outlined,
+              color: AppColors.white,
+              size: 23,
+            ),
+          ),
         ),
       ),
     );

@@ -14,41 +14,67 @@ class OtpCodeBoxes extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        const preferredGap = 23.0;
-        final gap = constraints.maxWidth < 325 ? 16.0 : preferredGap;
+        const preferredGap = 10.0;
+        final gap = constraints.maxWidth < 260 ? 8.0 : preferredGap;
         final boxWidth = ((constraints.maxWidth - (gap * 3)) / 4).clamp(
+          48.0,
           56.0,
-          64.0,
         );
 
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: List.generate(4, (index) {
             final digit = index < code.length ? code[index] : '';
+            final isFilled = digit.isNotEmpty;
+            final isActive = index == code.length && code.length < 4;
 
             return Padding(
               padding: EdgeInsets.only(
                 right: index == 3 ? 0 : gap,
               ),
-              child: SizedBox(
-                width: boxWidth,
-                height: 80,
-                child: DecoratedBox(
-                  decoration: const BoxDecoration(
-                    color: AppColors.white,
-                    border: Border.fromBorderSide(
-                      BorderSide(color: AppColors.border),
+              child: Semantics(
+                label: 'Chiffre ${index + 1} du code',
+                value: isFilled ? digit : 'vide',
+                child: SizedBox(
+                  width: boxWidth,
+                  height: 56,
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 160),
+                    curve: Curves.easeOut,
+                    decoration: BoxDecoration(
+                      color:
+                          isFilled ? AppColors.surfaceGreen : AppColors.white,
+                      border: Border.all(
+                        color: isFilled || isActive
+                            ? AppColors.leaf
+                            : AppColors.border,
+                        width: isActive ? 1.8 : 1.2,
+                      ),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: isActive
+                          ? [
+                              BoxShadow(
+                                color: AppColors.leaf.withValues(alpha: 0.12),
+                                blurRadius: 14,
+                                offset: const Offset(0, 5),
+                              ),
+                            ]
+                          : null,
                     ),
-                    borderRadius: BorderRadius.all(Radius.circular(11)),
-                  ),
-                  child: Center(
-                    child: Text(
-                      digit,
-                      style: const TextStyle(
-                        color: AppColors.ink,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0,
+                    child: Center(
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 120),
+                        transitionBuilder: (child, animation) =>
+                            ScaleTransition(scale: animation, child: child),
+                        child: Text(
+                          digit,
+                          key: ValueKey('$index-$digit'),
+                          style: const TextStyle(
+                            color: AppColors.forestDeep,
+                            fontSize: 21,
+                            fontWeight: FontWeight.w900,
+                          ),
+                        ),
                       ),
                     ),
                   ),

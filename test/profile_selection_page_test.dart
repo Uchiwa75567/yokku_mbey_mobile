@@ -67,8 +67,8 @@ void main() {
     await tester.tap(find.text('Suivant'));
     await tester.pumpAndSettle();
 
-    expect(find.text('Produits disponibles maintenant'), findsOneWidget);
-    expect(find.text('Tomate fraiche'), findsOneWidget);
+    expect(find.text('Produits disponibles'), findsOneWidget);
+    expect(find.text('Tomates Fraîches'), findsOneWidget);
   });
 }
 

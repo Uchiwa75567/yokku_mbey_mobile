@@ -18,27 +18,32 @@ class ProfileOptionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final borderColor =
-        isSelected ? const Color(0xFF74E09B) : Colors.transparent;
-    final foregroundColor = isSelected ? AppColors.leaf : AppColors.inputHint;
+        isSelected ? AppColors.forestDeep : const Color(0xFFE8ECE9);
+    final foregroundColor = isSelected ? AppColors.forest : AppColors.softInk;
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(12),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 180),
-        height: isSelected ? 91 : 88,
-        padding: const EdgeInsets.fromLTRB(16, 15, 15, 15),
+        height: 66,
+        padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.selectedOptionBackground
-              : AppColors.optionBackground,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: borderColor, width: 2),
+          color: AppColors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: borderColor, width: isSelected ? 1.5 : 1),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x12063D22),
+              blurRadius: 9,
+              offset: Offset(0, 3),
+            ),
+          ],
         ),
         child: Row(
           children: [
             _ProfileIcon(option: option),
-            const SizedBox(width: 16),
+            const SizedBox(width: 11),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -51,20 +56,20 @@ class ProfileOptionTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: AppColors.ink,
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w800,
                       height: 1.15,
                       letterSpacing: 0,
                     ),
                   ),
-                  const SizedBox(height: 5),
+                  const SizedBox(height: 3),
                   Text(
                     option.description,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
                       color: AppColors.softInk,
-                      fontSize: 14,
+                      fontSize: 10,
                       fontWeight: FontWeight.w400,
                       height: 1.15,
                       letterSpacing: 0,
@@ -76,7 +81,7 @@ class ProfileOptionTile extends StatelessWidget {
             Icon(
               Icons.chevron_right,
               color: foregroundColor,
-              size: 28,
+              size: 20,
             ),
           ],
         ),
@@ -93,16 +98,16 @@ class _ProfileIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox.square(
-      dimension: 56,
+      dimension: 42,
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: option.backgroundColor,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(9),
         ),
         child: Icon(
           option.icon,
           color: option.color,
-          size: 29,
+          size: 20,
         ),
       ),
     );

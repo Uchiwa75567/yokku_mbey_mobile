@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
@@ -22,6 +23,7 @@ flutter:
     - assets/images/splash_screen_1.png
     - assets/images/splash_screen_2.png
     - assets/images/splash_screen_3.png
+    - assets/images/onboarding_background.png
     - assets/images/senegal.png
     - assets/images/google.png
     - assets/images/logo_yokku_mbey.png
@@ -29,3 +31,14 @@ flutter:
     - assets/images/buyer_onion.png
     - assets/images/buyer_potato.png
     - assets/images/buyer_corn.png
+    - assets/images/buyer_home_avatar.png
+    - assets/images/buyer_home_tomato.png
+    - assets/images/buyer_home_onion.png
+    - assets/images/buyer_purchase_tomato.png
+    - assets/images/buyer_purchase_onion.png
+    - assets/images/buyer_purchase_potato.png
+    - assets/images/farmer_tomato_harvest.png
+    - assets/images/farmer_home_background.png
+    - assets/images/farmer_profile_background.png
+    - assets/images/harvest_tomato_detail.png
+    - assets/images/farmer_profile.png

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_assets.dart';
 import '../../domain/entities/splash_stage.dart';
 import '../widgets/onboarding_splash_view.dart';
 import '../widgets/splash_background_image.dart';
@@ -20,11 +21,26 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   SplashStage _stage = SplashStage.welcome;
   Timer? _stageTimer;
+  bool _onboardingBackgroundCached = false;
 
   @override
   void initState() {
     super.initState();
     _stageTimer = Timer(SplashPage.firstStageDuration, _showBrandStage);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_onboardingBackgroundCached) {
+      return;
+    }
+
+    _onboardingBackgroundCached = true;
+    precacheImage(
+      const AssetImage(AppAssets.onboardingBackground),
+      context,
+    );
   }
 
   @override

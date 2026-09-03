@@ -78,7 +78,7 @@ void main() {
     await tester.pump();
     expect(find.text('30 %'), findsOneWidget);
 
-    expect(find.byType(SingleChildScrollView), findsNothing);
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
     expect(find.byType(ListView), findsNothing);
     expect(find.byType(GridView), findsNothing);
   });

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_colors.dart';
+import '../../../harvest_detail/presentation/pages/harvest_detail_page.dart';
+import '../../../home/presentation/widgets/farmer_bottom_navigation.dart';
+import '../../../home/presentation/widgets/farmer_glass_surface.dart';
 
 enum _AvailabilityChoice { now, soon }
 
@@ -19,6 +22,9 @@ class HarvestPublicationPage extends StatefulWidget {
 }
 
 class _HarvestPublicationPageState extends State<HarvestPublicationPage> {
+  static const double _designWidth = 440;
+  static const double _designHeight = 956;
+
   int _step = 1;
   _AvailabilityChoice _availabilityChoice = _AvailabilityChoice.now;
   _DepositChoice _depositChoice = _DepositChoice.none;
@@ -28,10 +34,13 @@ class _HarvestPublicationPageState extends State<HarvestPublicationPage> {
   DateTime _endDate = DateTime(2026, 7, 25);
   final TextEditingController _depositPercentController =
       TextEditingController(text: '20 %');
+  final TextEditingController _contactPhoneController =
+      TextEditingController(text: '77 000 00 00');
 
   @override
   void dispose() {
     _depositPercentController.dispose();
+    _contactPhoneController.dispose();
     super.dispose();
   }
 
@@ -50,7 +59,7 @@ class _HarvestPublicationPageState extends State<HarvestPublicationPage> {
       return;
     }
 
-    Navigator.of(context).maybePop();
+    Navigator.of(context).pushReplacementNamed(HarvestDetailPage.routeName);
   }
 
   Future<void> _pickStartDate() async {
@@ -91,49 +100,92 @@ class _HarvestPublicationPageState extends State<HarvestPublicationPage> {
   @override
   Widget build(BuildContext context) {
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: SystemUiOverlayStyle.light,
       child: Scaffold(
-        backgroundColor: AppColors.white,
-        body: SizedBox.expand(
-          child: FittedBox(
-            fit: BoxFit.contain,
-            alignment: Alignment.center,
-            child: SizedBox(
-              width: 440,
-              height: 956,
-              child: _HarvestPublicationCanvas(
-                step: _step,
-                availabilityChoice: _availabilityChoice,
-                depositChoice: _depositChoice,
-                pickupChoice: _pickupChoice,
-                allowReservations: _allowReservations,
-                startDate: _startDate,
-                endDate: _endDate,
-                depositPercentController: _depositPercentController,
-                onBack: _goBack,
-                onContinue: _continue,
-                onStartDateTap: _pickStartDate,
-                onEndDateTap: _pickEndDate,
-                onAvailabilityChanged: (choice) {
-                  setState(() {
-                    _availabilityChoice = choice;
-                    _depositChoice = choice == _AvailabilityChoice.soon
-                        ? _DepositChoice.required
-                        : _DepositChoice.none;
-                  });
-                },
-                onDepositChanged: (choice) {
-                  setState(() => _depositChoice = choice);
-                },
-                onPickupChanged: (choice) {
-                  setState(() => _pickupChoice = choice);
-                },
-                onReservationsChanged: (value) {
-                  setState(() => _allowReservations = value);
-                },
+        backgroundColor: const Color(0xFF18241D),
+        body: LayoutBuilder(
+          builder: (context, constraints) {
+            final scale = (constraints.maxWidth / _designWidth).clamp(0.1, 1.0);
+            final scaledWidth = _designWidth * scale;
+            final scaledHeight = _designHeight * scale;
+            final navHeight = FarmerBottomNavigation.designHeight * scale;
+            final bottomSafeInset = MediaQuery.viewPaddingOf(context).bottom;
+
+            return Center(
+              child: SizedBox(
+                width: scaledWidth,
+                height: constraints.maxHeight,
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      width: scaledWidth,
+                      height: scaledHeight,
+                      child: FittedBox(
+                        fit: BoxFit.fill,
+                        alignment: Alignment.topLeft,
+                        child: SizedBox(
+                          width: _designWidth,
+                          height: _designHeight,
+                          child: _HarvestPublicationCanvas(
+                            step: _step,
+                            availabilityChoice: _availabilityChoice,
+                            depositChoice: _depositChoice,
+                            pickupChoice: _pickupChoice,
+                            allowReservations: _allowReservations,
+                            startDate: _startDate,
+                            endDate: _endDate,
+                            depositPercentController: _depositPercentController,
+                            contactPhoneController: _contactPhoneController,
+                            onBack: _goBack,
+                            onContinue: _continue,
+                            onStartDateTap: _pickStartDate,
+                            onEndDateTap: _pickEndDate,
+                            onAvailabilityChanged: (choice) {
+                              setState(() {
+                                _availabilityChoice = choice;
+                                _depositChoice =
+                                    choice == _AvailabilityChoice.soon
+                                        ? _DepositChoice.required
+                                        : _DepositChoice.none;
+                              });
+                            },
+                            onDepositChanged: (choice) {
+                              setState(() => _depositChoice = choice);
+                            },
+                            onPickupChanged: (choice) {
+                              setState(() => _pickupChoice = choice);
+                            },
+                            onReservationsChanged: (value) {
+                              setState(() => _allowReservations = value);
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: bottomSafeInset,
+                      height: navHeight,
+                      child: FittedBox(
+                        fit: BoxFit.fill,
+                        alignment: Alignment.bottomLeft,
+                        child: SizedBox(
+                          width: _designWidth,
+                          height: FarmerBottomNavigation.designHeight,
+                          child: FarmerBottomNavigation(
+                            activeTab: FarmerNavigationTab.home,
+                            onHome: () => Navigator.of(context).maybePop(),
+                            onPublishHarvest: () {},
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );
@@ -150,6 +202,7 @@ class _HarvestPublicationCanvas extends StatelessWidget {
     required this.startDate,
     required this.endDate,
     required this.depositPercentController,
+    required this.contactPhoneController,
     required this.onBack,
     required this.onContinue,
     required this.onStartDateTap,
@@ -168,6 +221,7 @@ class _HarvestPublicationCanvas extends StatelessWidget {
   final DateTime startDate;
   final DateTime endDate;
   final TextEditingController depositPercentController;
+  final TextEditingController contactPhoneController;
   final VoidCallback onBack;
   final VoidCallback onContinue;
   final VoidCallback onStartDateTap;
@@ -181,7 +235,10 @@ class _HarvestPublicationCanvas extends StatelessWidget {
   Widget build(BuildContext context) {
     final body = switch (step) {
       1 => _StepOneForm(onContinue: onContinue),
-      2 => _StepTwoForm(onContinue: onContinue),
+      2 => _StepTwoForm(
+          contactPhoneController: contactPhoneController,
+          onContinue: onContinue,
+        ),
       _ => _StepThreeForm(
           availabilityChoice: availabilityChoice,
           depositChoice: depositChoice,
@@ -200,23 +257,101 @@ class _HarvestPublicationCanvas extends StatelessWidget {
         ),
     };
 
-    return ColoredBox(
-      color: AppColors.white,
-      child: Stack(
-        children: [
-          Positioned(
-            left: 29,
-            right: 16,
-            top: step == 3 ? 70 : 113,
-            child: _PublicationHeader(
-              title: step == 3 ? 'Disponibilité' : 'Publier une récolte',
-              step: step,
-              onBack: onBack,
+    return Stack(
+      children: [
+        const Positioned.fill(
+          child: FarmerGlassBackground(overlayOpacity: 0.48),
+        ),
+        const _PublicationTopBar(),
+        Positioned(
+          left: 17,
+          right: 17,
+          top: 73,
+          child: _PublicationHeader(step: step, onBack: onBack),
+        ),
+        Positioned(
+          left: 10,
+          right: 10,
+          top: 188,
+          bottom: 90,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 17, 16, 22),
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: body,
             ),
           ),
-          body,
-          const _PublicationBottomNavigation(),
-        ],
+        ),
+      ],
+    );
+  }
+}
+
+class _PublicationTopBar extends StatelessWidget {
+  const _PublicationTopBar();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Positioned(
+      left: 0,
+      right: 0,
+      top: 0,
+      height: 62,
+      child: FarmerGlassSurface(
+        color: Color(0x1AFFFFFF),
+        blurSigma: 16,
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(24),
+        ),
+        borderColor: Color(0x33FFFFFF),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            children: [
+              SizedBox.square(
+                dimension: 32,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: Color(0x33FFFFFF),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.eco_rounded,
+                    color: AppColors.white,
+                    size: 20,
+                  ),
+                ),
+              ),
+              SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  'Yokku Mbey',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 19,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+              ),
+              Icon(
+                Icons.notifications_none_rounded,
+                color: AppColors.white,
+                size: 22,
+              ),
+              SizedBox(width: 12),
+              CircleAvatar(
+                radius: 15,
+                backgroundColor: Color(0x33FFFFFF),
+                child: Icon(
+                  Icons.person_rounded,
+                  color: AppColors.white,
+                  size: 19,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -224,52 +359,136 @@ class _HarvestPublicationCanvas extends StatelessWidget {
 
 class _PublicationHeader extends StatelessWidget {
   const _PublicationHeader({
-    required this.title,
     required this.step,
     required this.onBack,
   });
 
-  final String title;
   final int step;
   final VoidCallback onBack;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    final subtitle = switch (step) {
+      1 => 'Ajoutez les détails essentiels de votre production.',
+      2 => 'Renseignez le volume, le prix et la localisation.',
+      _ => 'Définissez la disponibilité, la réservation et le retrait.',
+    };
+
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _BackButton(onPressed: onBack),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
+        Row(
+          children: [
+            _BackButton(onPressed: onBack),
+            const SizedBox(width: 10),
+            const Expanded(
+              child: Text(
+                'Publier une récolte',
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 30,
+                style: TextStyle(
+                  color: AppColors.white,
+                  fontSize: 25,
                   fontWeight: FontWeight.w800,
-                  height: 1.04,
-                  letterSpacing: 0,
+                  letterSpacing: -0.4,
                 ),
               ),
-              const SizedBox(height: 5),
-              Text(
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              decoration: BoxDecoration(
+                color: const Color(0xB3122819),
+                borderRadius: BorderRadius.circular(99),
+                border: Border.all(color: const Color(0x4DFFFFFF)),
+              ),
+              child: Text(
                 'Étape $step sur 3',
                 style: const TextStyle(
-                  color: Color(0xFF333333),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0,
+                  color: AppColors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
-            ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 11),
+        _StepProgressIndicator(step: step),
+        const SizedBox(height: 8),
+        Text(
+          subtitle,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(
+            color: Color(0xFFE7EFE9),
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
           ),
         ),
       ],
+    );
+  }
+}
+
+class _StepProgressIndicator extends StatelessWidget {
+  const _StepProgressIndicator({required this.step});
+
+  final int step;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        for (var index = 1; index <= 3; index++) ...[
+          _StepDot(index: index, activeStep: step),
+          if (index < 3)
+            Expanded(
+              child: Container(
+                height: 2,
+                color: index < step
+                    ? const Color(0xFF9BE5AE)
+                    : const Color(0x66FFFFFF),
+              ),
+            ),
+        ],
+      ],
+    );
+  }
+}
+
+class _StepDot extends StatelessWidget {
+  const _StepDot({required this.index, required this.activeStep});
+
+  final int index;
+  final int activeStep;
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = index == activeStep;
+    final isComplete = index < activeStep;
+    return Container(
+      width: 24,
+      height: 24,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: isActive
+            ? const Color(0xFF087C3A)
+            : isComplete
+                ? const Color(0xFFB9EBC5)
+                : const Color(0xCCFFFFFF),
+        shape: BoxShape.circle,
+        border: Border.all(color: const Color(0x99FFFFFF)),
+      ),
+      child: isComplete
+          ? const Icon(Icons.check_rounded, size: 14, color: Color(0xFF075D2B))
+          : Text(
+              '$index',
+              style: TextStyle(
+                color: isActive ? AppColors.white : const Color(0xFF385042),
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
     );
   }
 }
@@ -282,9 +501,9 @@ class _BackButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox.square(
-      dimension: 40,
+      dimension: 34,
       child: Material(
-        color: const Color(0xFF9AC99C),
+        color: const Color(0x33FFFFFF),
         shape: const CircleBorder(),
         child: InkWell(
           onTap: onPressed,
@@ -292,10 +511,117 @@ class _BackButton extends StatelessWidget {
           child: const Icon(
             Icons.chevron_left,
             color: AppColors.white,
-            size: 34,
+            size: 27,
           ),
         ),
       ),
+    );
+  }
+}
+
+class _FormSectionTitle extends StatelessWidget {
+  const _FormSectionTitle({
+    required this.icon,
+    required this.title,
+    this.trailing,
+  });
+
+  final IconData icon;
+  final String title;
+  final String? trailing;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 30,
+          height: 30,
+          decoration: BoxDecoration(
+            color: const Color(0xFFE2F2E3),
+            borderRadius: BorderRadius.circular(9),
+          ),
+          child: Icon(icon, color: const Color(0xFF125B2E), size: 18),
+        ),
+        const SizedBox(width: 9),
+        Expanded(
+          child: Text(
+            title,
+            style: const TextStyle(
+              color: AppColors.white,
+              fontSize: 17,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.2,
+            ),
+          ),
+        ),
+        if (trailing != null)
+          Text(
+            trailing!,
+            style: const TextStyle(
+              color: Color(0xFFDCE8DF),
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _MiniSectionHeader extends StatelessWidget {
+  const _MiniSectionHeader({required this.icon, required this.title});
+
+  final IconData icon;
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(icon, color: const Color(0xFF24623B), size: 17),
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: AppColors.ink,
+              fontSize: 13,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _GlassFormCard extends StatelessWidget {
+  const _GlassFormCard({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: const Color(0xBFFFFFFF),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: const Color(0xCCFFFFFF)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x140A2A16),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
     );
   }
 }
@@ -307,54 +633,49 @@ class _StepOneForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Stack(
-        children: [
-          const Positioned(
-            left: 29,
-            right: 16,
-            top: 210,
-            child: _PhotoUploadCard(),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _FormSectionTitle(
+          icon: Icons.photo_camera_outlined,
+          title: 'Photos du produit',
+          trailing: 'Max. 5 images',
+        ),
+        const SizedBox(height: 11),
+        const _PhotoUploadCard(),
+        const SizedBox(height: 8),
+        const Text(
+          "Ajouter jusqu'à 5 photos",
+          style: TextStyle(
+            color: Color(0xFFDCE8DF),
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
           ),
-          const Positioned(
-            left: 36,
-            right: 53,
-            top: 380,
-            child: _PublicationInput(
-              label: 'Nom du produit *',
-              hint: 'Ex. Tomate fraîche',
-            ),
-          ),
-          const Positioned(
-            left: 36,
-            right: 53,
-            top: 483,
-            child: _PublicationInput(
-              label: 'Catégorie *',
-              hint: 'Sélectionner une catégorie',
-              trailing: Icons.keyboard_arrow_down,
-            ),
-          ),
-          const Positioned(
-            left: 36,
-            right: 53,
-            top: 583,
-            child: _PublicationInput(
-              label: 'Description',
-              hint: 'Décrivez la qualité, la variété...',
-              height: 127,
-              maxLines: 4,
-              alignTop: true,
-            ),
-          ),
-          Positioned(
-            left: 52,
-            right: 63,
-            top: 787,
-            child: _PrimaryButton(label: 'Continuer', onPressed: onContinue),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 17),
+        const _PublicationInput(
+          label: 'Nom du produit *',
+          hint: 'Ex. Tomates rondes biologiques',
+          compact: true,
+        ),
+        const SizedBox(height: 12),
+        const _PublicationInput(
+          label: 'Catégorie *',
+          hint: 'Sélectionnez une catégorie…',
+          trailing: Icons.keyboard_arrow_down_rounded,
+          compact: true,
+        ),
+        const SizedBox(height: 12),
+        const _PublicationInput(
+          label: 'Description',
+          hint: "Décrivez la qualité, l'origine ou les particularités…",
+          height: 92,
+          maxLines: 4,
+          alignTop: true,
+        ),
+        const SizedBox(height: 18),
+        _PrimaryButton(label: 'Continuer', onPressed: onContinue),
+      ],
     );
   }
 }
@@ -364,170 +685,152 @@ class _PhotoUploadCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return const Row(
+      children: [
+        Expanded(child: _PhotoTile(primary: true)),
+        SizedBox(width: 10),
+        Expanded(child: _PhotoTile()),
+        SizedBox(width: 10),
+        Expanded(child: _PhotoTile()),
+      ],
+    );
+  }
+}
+
+class _PhotoTile extends StatelessWidget {
+  const _PhotoTile({this.primary = false});
+
+  final bool primary;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      height: 116,
-      padding: const EdgeInsets.fromLTRB(24, 30, 22, 26),
+      height: 88,
       decoration: BoxDecoration(
-        color: const Color(0xFFE9F7EF),
-        borderRadius: BorderRadius.circular(16),
+        color: primary ? const Color(0xFFE8F5DF) : const Color(0x99FFFFFF),
+        borderRadius: BorderRadius.circular(13),
+        border: Border.all(
+          color: primary ? const Color(0xFFB9DDB2) : const Color(0x80FFFFFF),
+        ),
       ),
-      child: const Row(
-        children: [
-          SizedBox.square(
-            dimension: 52,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: Color(0xFFD4F5E2),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(Icons.add, color: Color(0xFF007A33), size: 28),
-            ),
-          ),
-          SizedBox(width: 18),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Ajouter jusqu'à 5 photos",
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Color(0xFF007A33),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    height: 1,
-                    letterSpacing: 0,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Photo claire du produit',
-                  style: TextStyle(
-                    color: Color(0xFF7A8698),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w400,
-                    height: 1,
-                    letterSpacing: 0,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      child: Icon(
+        primary ? Icons.add_a_photo_outlined : Icons.image_outlined,
+        color: primary ? const Color(0xFF184F2A) : const Color(0xFF9EAEA3),
+        size: 25,
       ),
     );
   }
 }
 
 class _StepTwoForm extends StatelessWidget {
-  const _StepTwoForm({required this.onContinue});
+  const _StepTwoForm({
+    required this.contactPhoneController,
+    required this.onContinue,
+  });
 
+  final TextEditingController contactPhoneController;
   final VoidCallback onContinue;
 
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Stack(
-        children: [
-          const Positioned(
-            left: 27,
-            right: 24,
-            top: 229,
-            child: Text(
-              'Quantité et prix',
-              style: TextStyle(
-                color: AppColors.ink,
-                fontSize: 19,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _FormSectionTitle(
+          icon: Icons.scale_outlined,
+          title: 'Quantité et prix',
+        ),
+        const SizedBox(height: 12),
+        const Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: _PublicationInput(
+                label: 'Quantité disponible *',
+                hint: 'Ex. 500',
+                compact: true,
               ),
             ),
-          ),
-          const Positioned(
-            left: 24,
-            right: 20,
-            top: 277,
-            child: Row(
-              children: [
-                Expanded(
-                  child: _PublicationInput(
-                    label: 'Quantité *',
-                    hint: '500',
-                    compact: true,
-                  ),
-                ),
-                SizedBox(width: 24),
-                Expanded(
-                  child: _PublicationInput(
-                    label: 'Unité *',
-                    hint: 'Kilogramme (kg)',
-                    compact: true,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Positioned(
-            left: 24,
-            right: 20,
-            top: 371,
-            child: Row(
-              children: [
-                Expanded(
-                  child: _PublicationInput(
-                    label: 'Prix par unité *',
-                    hint: '400 FCFA',
-                    compact: true,
-                  ),
-                ),
-                SizedBox(width: 24),
-                Expanded(
-                  child: _PublicationInput(
-                    label: 'Commande minimale',
-                    hint: '50 kg',
-                    compact: true,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Positioned(
-            left: 27,
-            right: 24,
-            top: 476,
-            child: Text(
-              'Localisation',
-              style: TextStyle(
-                color: AppColors.ink,
-                fontSize: 19,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0,
+            SizedBox(width: 12),
+            Expanded(
+              child: _PublicationInput(
+                label: 'Unité de mesure *',
+                hint: 'Kilogrammes (kg)',
+                trailing: Icons.keyboard_arrow_down_rounded,
+                compact: true,
               ),
             ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        const Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: _PublicationInput(
+                label: 'Prix unitaire *',
+                hint: 'Ex. 250 FCFA',
+                compact: true,
+              ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: _PublicationInput(
+                label: 'Commande minimale',
+                hint: 'Ex. 50 kg',
+                compact: true,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        const _FormSectionTitle(
+          icon: Icons.location_on_outlined,
+          title: 'Localisation',
+        ),
+        const SizedBox(height: 12),
+        const Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: _PublicationInput(
+                label: 'Région *',
+                hint: 'Sélectionner',
+                trailing: Icons.keyboard_arrow_down_rounded,
+                compact: true,
+              ),
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: _PublicationInput(
+                label: 'Localité précise *',
+                hint: 'Ex. Mbour',
+                compact: true,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        _PublicationInput(
+          key: const ValueKey('harvest-contact-phone'),
+          label: 'Numéro de contact *',
+          hint: '+221 77 123 45 67',
+          controller: contactPhoneController,
+          keyboardType: TextInputType.phone,
+          compact: true,
+        ),
+        const SizedBox(height: 7),
+        const Text(
+          'Ce numéro sera utilisé par les acheteurs pour vous contacter.',
+          style: TextStyle(
+            color: Color(0xFFDCE8DF),
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
           ),
-          const Positioned(
-            left: 28,
-            right: 63,
-            top: 524,
-            child: _PublicationInput(label: 'Région *', hint: 'Kaolack'),
-          ),
-          const Positioned(
-            left: 28,
-            right: 63,
-            top: 615,
-            child: _PublicationInput(label: 'Localité *', hint: 'Nioro du Rip'),
-          ),
-          Positioned(
-            left: 52,
-            right: 63,
-            top: 787,
-            child: _PrimaryButton(label: 'Continuer', onPressed: onContinue),
-          ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 16),
+        _PrimaryButton(label: 'Continuer', onPressed: onContinue),
+      ],
     );
   }
 }
@@ -569,204 +872,183 @@ class _StepThreeForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Stack(
-        children: [
-          Positioned(
-            left: _isSoon ? 39 : 44,
-            right: _isSoon ? 39 : 44,
-            top: 160,
-            child: const Text(
-              'Quand la récolte sera-t-elle disponible\n?',
-              style: TextStyle(
-                color: Color(0xFF071A0F),
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                height: 1.25,
-                letterSpacing: 0,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const _FormSectionTitle(
+          icon: Icons.event_available_outlined,
+          title: 'Disponibilité',
+          trailing: 'Étape finale',
+        ),
+        const SizedBox(height: 5),
+        const Text(
+          'Configurez la disponibilité et les modalités de réservation.',
+          style: TextStyle(
+            color: Color(0xFFDCE8DF),
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(height: 11),
+        _GlassFormCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _MiniSectionHeader(
+                icon: Icons.calendar_today_outlined,
+                title: 'Période de disponibilité',
               ),
-            ),
-          ),
-          Positioned(
-            left: _isSoon ? 39 : 44,
-            right: _isSoon ? 51 : 46,
-            top: 221,
-            child: _AvailabilityCard(
-              title: 'Disponible maintenant',
-              subtitle: 'Le produit est déjà prêt à être vendu.',
-              selected: availabilityChoice == _AvailabilityChoice.now,
-              selectedColor: const Color(0xFF0A7D16),
-              selectedBackground: const Color(0xFFF0FAF3),
-              onTap: () => onAvailabilityChanged(_AvailabilityChoice.now),
-            ),
-          ),
-          Positioned(
-            left: _isSoon ? 39 : 44,
-            right: _isSoon ? 51 : 46,
-            top: 308,
-            child: _AvailabilityCard(
-              title: 'Disponible prochainement',
-              subtitle: 'La récolte sera disponible plus tard.',
-              selected: availabilityChoice == _AvailabilityChoice.soon,
-              selectedColor: const Color(0xFFFF7A2B),
-              selectedBackground: const Color(0xFFFFF4EA),
-              onTap: () => onAvailabilityChanged(_AvailabilityChoice.soon),
-            ),
-          ),
-          if (_isSoon) ...[
-            const Positioned(
-              left: 39,
-              right: 51,
-              top: 402,
-              child: Text(
-                'Période estimée',
-                style: TextStyle(
-                  color: AppColors.ink,
-                  fontSize: 20,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
-                ),
-              ),
-            ),
-            Positioned(
-              left: 39,
-              right: 51,
-              top: 441,
-              child: Row(
+              const SizedBox(height: 10),
+              Row(
                 children: [
                   Expanded(
-                    child: _DateInputField(
-                      label: 'DATE DE DÉBUT *',
-                      value: _formatDate(startDate),
-                      onTap: onStartDateTap,
+                    child: _SegmentButton(
+                      label: 'Disponible maintenant',
+                      selected: !_isSoon,
+                      height: 40,
+                      onTap: () =>
+                          onAvailabilityChanged(_AvailabilityChoice.now),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 8),
                   Expanded(
-                    child: _DateInputField(
-                      label: 'DATE DE FIN *',
-                      value: _formatDate(endDate),
-                      onTap: onEndDateTap,
+                    child: _SegmentButton(
+                      label: 'Disponible prochainement',
+                      selected: _isSoon,
+                      height: 40,
+                      onTap: () =>
+                          onAvailabilityChanged(_AvailabilityChoice.soon),
                     ),
                   ),
                 ],
               ),
-            ),
-            const Positioned(
-              left: 39,
-              right: 51,
-              top: 522,
-              child: Text(
-                'Cette période est estimative et modifiable.',
-                style: TextStyle(
-                  color: Color(0xFFA5B1C2),
-                  fontSize: 12,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0,
+              if (_isSoon) ...[
+                const SizedBox(height: 12),
+                const Text(
+                  'Période estimée',
+                  style: TextStyle(
+                    color: AppColors.ink,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                  ),
                 ),
-              ),
-            ),
-          ],
-          if (_isSoon)
-            Positioned(
-              left: 39,
-              right: 51,
-              top: 549,
-              child: _ReservationToggle(
-                value: allowReservations,
-                onChanged: onReservationsChanged,
-              ),
-            )
-          else
-            Positioned(
-              left: 44,
-              right: 46,
-              top: 416,
-              child: _CompactReservationToggle(
-                value: allowReservations,
-                onChanged: onReservationsChanged,
-              ),
-            ),
-          Positioned(
-            left: _isSoon ? 39 : 44,
-            right: _isSoon ? 51 : 46,
-            top: _isSoon ? 612 : 533,
-            child: const Text(
-              'Acompte',
-              style: TextStyle(
-                color: AppColors.ink,
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                letterSpacing: 0,
-              ),
-            ),
+                const SizedBox(height: 7),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _DateInputField(
+                        label: 'DATE DE DÉBUT *',
+                        value: _formatDate(startDate),
+                        onTap: onStartDateTap,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _DateInputField(
+                        label: 'DATE DE FIN *',
+                        value: _formatDate(endDate),
+                        onTap: onEndDateTap,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ],
           ),
-          Positioned(
-            left: _isSoon ? 31 : 44,
-            right: _isSoon ? 59 : 46,
-            top: _isSoon ? 649 : 557,
-            child: _DepositSelector(
-              selected: depositChoice,
-              isExpandedLayout: _isSoon,
-              onChanged: onDepositChanged,
-            ),
-          ),
-          if (_isSoon) ...[
-            const Positioned(
-              left: 31,
-              right: 59,
-              top: 716,
-              child: Text(
-                "Pourcentage d'acompte",
+        ),
+        const SizedBox(height: 11),
+        _GlassFormCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Expanded(
+                    child: _MiniSectionHeader(
+                      icon: Icons.event_note_outlined,
+                      title: 'Réservation',
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => onReservationsChanged(!allowReservations),
+                    child: _SwitchPill(value: allowReservations),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 7),
+              const Text(
+                'Autoriser les pré-réservations',
                 style: TextStyle(
                   color: AppColors.ink,
-                  fontSize: 13,
+                  fontSize: 11,
                   fontWeight: FontWeight.w700,
-                  letterSpacing: 0,
                 ),
               ),
-            ),
-            Positioned(
-              left: 31,
-              right: 59,
-              top: 737,
-              child: _PercentageInput(controller: depositPercentController),
-            ),
-          ] else ...[
-            const Positioned(
-              left: 44,
-              right: 46,
-              top: 621,
-              child: Text(
-                'Mode de récupération',
+              const SizedBox(height: 3),
+              const Text(
+                'Les acheteurs pourront réserver avant la récupération.',
                 style: TextStyle(
-                  color: AppColors.ink,
-                  fontSize: 15,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
+                  color: Color(0xFF5E7266),
+                  fontSize: 9,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
-            ),
-            Positioned(
-              left: 44,
-              right: 46,
-              top: 644,
-              child: _PickupSelector(
-                  selected: pickupChoice, onChanged: onPickupChanged),
-            ),
-          ],
-          Positioned(
-            left: _isSoon ? 48 : 52,
-            right: _isSoon ? 67 : 63,
-            top: _isSoon ? 794 : 800,
-            child: _PrimaryButton(
-              label: 'Publier la récolte',
-              onPressed: onContinue,
-            ),
+              if (allowReservations) ...[
+                const SizedBox(height: 11),
+                const Text(
+                  'Acompte requis',
+                  style: TextStyle(
+                    color: AppColors.ink,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 7),
+                _DepositSelector(
+                  selected: depositChoice,
+                  isExpandedLayout: false,
+                  onChanged: onDepositChanged,
+                ),
+                if (depositChoice != _DepositChoice.none) ...[
+                  const SizedBox(height: 9),
+                  const Text(
+                    "Pourcentage d'acompte",
+                    style: TextStyle(
+                      color: AppColors.ink,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  _PercentageInput(controller: depositPercentController),
+                ],
+              ],
+            ],
           ),
-        ],
-      ),
+        ),
+        const SizedBox(height: 11),
+        _GlassFormCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _MiniSectionHeader(
+                icon: Icons.local_shipping_outlined,
+                title: 'Mode de récupération',
+              ),
+              const SizedBox(height: 9),
+              _PickupSelector(
+                selected: pickupChoice,
+                onChanged: onPickupChanged,
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 15),
+        _PrimaryButton(
+          label: 'Publier la récolte',
+          onPressed: onContinue,
+        ),
+      ],
     );
   }
 
@@ -774,231 +1056,6 @@ class _StepThreeForm extends StatelessWidget {
     final day = date.day.toString().padLeft(2, '0');
     final month = date.month.toString().padLeft(2, '0');
     return '$day/$month/${date.year}';
-  }
-}
-
-class _AvailabilityCard extends StatelessWidget {
-  const _AvailabilityCard({
-    required this.title,
-    required this.subtitle,
-    required this.selected,
-    required this.selectedColor,
-    required this.selectedBackground,
-    required this.onTap,
-  });
-
-  final String title;
-  final String subtitle;
-  final bool selected;
-  final Color selectedColor;
-  final Color selectedBackground;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: selected ? selectedBackground : AppColors.white,
-      borderRadius: BorderRadius.circular(10),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          height: 73,
-          padding: const EdgeInsets.fromLTRB(14, 9, 15, 9),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: selected ? selectedColor : const Color(0xFFE8EBF0),
-              width: selected ? 2 : 1,
-            ),
-          ),
-          child: Row(
-            children: [
-              _RadioDot(color: selectedColor, selected: selected),
-              const SizedBox(width: 15),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: AppColors.ink,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        height: 1,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(
-                        color: Color(0xFF8190A6),
-                        fontSize: 11,
-                        fontWeight: FontWeight.w400,
-                        height: 1,
-                        letterSpacing: 0,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _RadioDot extends StatelessWidget {
-  const _RadioDot({required this.color, required this.selected});
-
-  final Color color;
-  final bool selected;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 28,
-      height: 28,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        border: Border.all(color: selected ? color : const Color(0xFF9AA7BA)),
-        color: selected ? color : AppColors.white,
-      ),
-      child: selected
-          ? const Center(
-              child: SizedBox.square(
-                dimension: 7,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppColors.white,
-                  ),
-                ),
-              ),
-            )
-          : null,
-    );
-  }
-}
-
-class _CompactReservationToggle extends StatelessWidget {
-  const _CompactReservationToggle({
-    required this.value,
-    required this.onChanged,
-  });
-
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Réservation',
-          style: TextStyle(
-            color: AppColors.ink,
-            fontSize: 15,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0,
-          ),
-        ),
-        const SizedBox(height: 12),
-        Material(
-          color: const Color(0xFFF7F8FA),
-          borderRadius: BorderRadius.circular(10),
-          child: InkWell(
-            onTap: () => onChanged(!value),
-            borderRadius: BorderRadius.circular(10),
-            child: SizedBox(
-              height: 56,
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(17, 0, 15, 0),
-                child: Row(
-                  children: [
-                    const Expanded(
-                      child: Text(
-                        'Autoriser les réservations',
-                        style: TextStyle(
-                          color: AppColors.ink,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: 0,
-                        ),
-                      ),
-                    ),
-                    Icon(
-                      value ? Icons.check_circle : Icons.circle_outlined,
-                      color: value
-                          ? const Color(0xFF2563EB)
-                          : const Color(0xFF95A2B5),
-                      size: 18,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _ReservationToggle extends StatelessWidget {
-  const _ReservationToggle({
-    required this.value,
-    required this.onChanged,
-  });
-
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: const Color(0xFFF7F8FA),
-      borderRadius: BorderRadius.circular(10),
-      child: InkWell(
-        onTap: () => onChanged(!value),
-        borderRadius: BorderRadius.circular(10),
-        child: SizedBox(
-          height: 58,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(17, 0, 16, 0),
-            child: Row(
-              children: [
-                const Expanded(
-                  child: Text(
-                    'Autoriser les pré-réservations',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      color: AppColors.ink,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0,
-                    ),
-                  ),
-                ),
-                _SwitchPill(value: value),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
 
@@ -1089,27 +1146,105 @@ class _PickupSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Column(
       children: [
-        SizedBox(
-          width: 188,
-          child: _SegmentButton(
-            label: 'Retrait producteur',
-            selected: selected == _PickupChoice.producer,
-            height: 42,
-            onTap: () => onChanged(_PickupChoice.producer),
-          ),
+        _PickupOption(
+          icon: Icons.storefront_outlined,
+          label: 'Retrait producteur',
+          description: 'L’acheteur récupère la récolte sur votre exploitation.',
+          selected: selected == _PickupChoice.producer,
+          onTap: () => onChanged(_PickupChoice.producer),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _SegmentButton(
-            label: 'Livraison acheteur',
-            selected: selected == _PickupChoice.buyerDelivery,
-            height: 42,
-            onTap: () => onChanged(_PickupChoice.buyerDelivery),
-          ),
+        const SizedBox(height: 8),
+        _PickupOption(
+          icon: Icons.local_shipping_outlined,
+          label: 'Livraison acheteur',
+          description: 'Vous organisez le transport jusqu’au lieu convenu.',
+          selected: selected == _PickupChoice.buyerDelivery,
+          onTap: () => onChanged(_PickupChoice.buyerDelivery),
         ),
       ],
+    );
+  }
+}
+
+class _PickupOption extends StatelessWidget {
+  const _PickupOption({
+    required this.icon,
+    required this.label,
+    required this.description,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final String description;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: selected ? const Color(0xFFE4F1E5) : const Color(0x99FFFFFF),
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          height: 59,
+          padding: const EdgeInsets.symmetric(horizontal: 11),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color:
+                  selected ? const Color(0xFF6DA578) : const Color(0x99D7E0D9),
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(icon, color: const Color(0xFF28623C), size: 18),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      label,
+                      style: const TextStyle(
+                        color: AppColors.ink,
+                        fontSize: 12,
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      description,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Color(0xFF607468),
+                        fontSize: 9,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                selected
+                    ? Icons.radio_button_checked_rounded
+                    : Icons.radio_button_off_rounded,
+                color: selected
+                    ? const Color(0xFF087C3A)
+                    : const Color(0xFF95A69A),
+                size: 18,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -1204,16 +1339,27 @@ class _DateInputField extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: const Color(0xFFE8EBF0)),
               ),
-              child: Text(
-                value,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: AppColors.ink,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0,
-                ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      value,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: AppColors.ink,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0,
+                      ),
+                    ),
+                  ),
+                  const Icon(
+                    Icons.calendar_month_outlined,
+                    color: Color(0xFF496254),
+                    size: 17,
+                  ),
+                ],
               ),
             ),
           ),
@@ -1268,6 +1414,9 @@ class _PublicationInput extends StatelessWidget {
     this.maxLines = 1,
     this.alignTop = false,
     this.compact = false,
+    this.controller,
+    this.keyboardType,
+    super.key,
   });
 
   final String label;
@@ -1277,6 +1426,8 @@ class _PublicationInput extends StatelessWidget {
   final int maxLines;
   final bool alignTop;
   final bool compact;
+  final TextEditingController? controller;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -1288,7 +1439,7 @@ class _PublicationInput extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
-            color: AppColors.ink,
+            color: AppColors.white,
             fontSize: 14,
             fontWeight: FontWeight.w800,
             letterSpacing: 0,
@@ -1308,17 +1459,26 @@ class _PublicationInput extends StatelessWidget {
                 alignTop ? CrossAxisAlignment.start : CrossAxisAlignment.center,
             children: [
               Expanded(
-                child: Text(
-                  hint,
-                  maxLines: maxLines,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Color(0xFF9AA7BA),
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    letterSpacing: 0,
-                  ),
-                ),
+                child: controller == null
+                    ? Text(
+                        hint,
+                        maxLines: maxLines,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Color(0xFF9AA7BA),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      )
+                    : TextField(
+                        controller: controller,
+                        keyboardType: keyboardType,
+                        decoration: InputDecoration.collapsed(hintText: hint),
+                        style: const TextStyle(
+                          color: AppColors.ink,
+                          fontSize: 14,
+                        ),
+                      ),
               ),
               if (trailing != null)
                 Icon(trailing, color: const Color(0xFF69778C), size: 21),
@@ -1341,133 +1501,33 @@ class _PrimaryButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 59,
-      child: FilledButton(
-        onPressed: onPressed,
-        style: FilledButton.styleFrom(
-          backgroundColor: const Color(0xFF007A00),
-          foregroundColor: AppColors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(9)),
-          textStyle: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w800,
-            letterSpacing: 0,
-          ),
-        ),
-        child: Text(label),
-      ),
-    );
-  }
-}
-
-class _PublicationBottomNavigation extends StatelessWidget {
-  const _PublicationBottomNavigation();
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      left: 0,
-      right: 0,
-      bottom: 0,
+    final isPublishing = label.startsWith('Publier');
+    return Align(
+      alignment: Alignment.center,
       child: SizedBox(
-        height: 63,
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            color: AppColors.white,
-            border: Border(top: BorderSide(color: Color(0xFFE8EBF0))),
-          ),
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _PublicationNavItem(
-                    icon: Icons.home,
-                    label: 'Accueil',
-                    isActive: true,
-                  ),
-                  _PublicationNavItem(
-                    icon: Icons.search,
-                    label: 'Recherche',
-                  ),
-                  SizedBox(width: 66),
-                  _PublicationNavItem(
-                    icon: Icons.chat_bubble_outline,
-                    label: 'Réservations',
-                  ),
-                  _PublicationNavItem(
-                    icon: Icons.person_outline,
-                    label: 'Profil',
-                  ),
-                ],
-              ),
-              Positioned(
-                left: 184,
-                top: -22,
-                child: Container(
-                  width: 56,
-                  height: 56,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF49B653),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: AppColors.white, width: 4),
-                    boxShadow: [
-                      BoxShadow(
-                        color: const Color(0xFF49B653).withValues(alpha: 0.24),
-                        blurRadius: 16,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child:
-                      const Icon(Icons.add, color: AppColors.white, size: 33),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PublicationNavItem extends StatelessWidget {
-  const _PublicationNavItem({
-    required this.icon,
-    required this.label,
-    this.isActive = false,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool isActive;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isActive ? const Color(0xFF49B653) : const Color(0xFF98A3B3);
-
-    return SizedBox(
-      width: 80,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(icon, color: color, size: 22),
-          const SizedBox(height: 3),
-          Text(
-            label,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: color,
-              fontSize: 10,
-              fontWeight: isActive ? FontWeight.w800 : FontWeight.w400,
+        width: 255,
+        height: 56,
+        child: FilledButton.icon(
+          onPressed: onPressed,
+          style: FilledButton.styleFrom(
+            backgroundColor: const Color(0xFF007A00),
+            foregroundColor: AppColors.white,
+            elevation: 0,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            textStyle: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
               letterSpacing: 0,
             ),
           ),
-        ],
+          icon: Icon(
+            isPublishing ? Icons.publish_rounded : Icons.arrow_forward_rounded,
+            size: 20,
+          ),
+          label: Text(label),
+        ),
       ),
     );
   }
