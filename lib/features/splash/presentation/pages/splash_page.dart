@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../../../../core/theme/app_assets.dart';
+import '../../domain/entities/onboarding_slides.dart';
 import '../../domain/entities/splash_stage.dart';
 import '../widgets/onboarding_splash_view.dart';
 import '../widgets/splash_background_image.dart';
@@ -11,8 +11,8 @@ class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
 
   static const String routeName = '/';
-  static const Duration firstStageDuration = Duration(seconds: 5);
-  static const Duration transitionDuration = Duration(milliseconds: 850);
+  static const Duration firstStageDuration = Duration(milliseconds: 700);
+  static const Duration transitionDuration = Duration(milliseconds: 250);
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -21,7 +21,7 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   SplashStage _stage = SplashStage.welcome;
   Timer? _stageTimer;
-  bool _onboardingBackgroundCached = false;
+  bool _onboardingImageCached = false;
 
   @override
   void initState() {
@@ -32,13 +32,13 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_onboardingBackgroundCached) {
+    if (_onboardingImageCached) {
       return;
     }
 
-    _onboardingBackgroundCached = true;
+    _onboardingImageCached = true;
     precacheImage(
-      const AssetImage(AppAssets.onboardingBackground),
+      AssetImage(OnboardingSlides.items.first.imageAsset),
       context,
     );
   }

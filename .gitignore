@@ -4,6 +4,7 @@
 .packages
 build/
 coverage/
+output/qa/
 
 android/.gradle/
 ios/Flutter/ephemeral/

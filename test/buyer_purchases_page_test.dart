@@ -25,7 +25,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Réservations'));
+    await tester.tap(find.text('Achats'));
     await tester.pumpAndSettle();
 
     expect(find.byType(BuyerPurchasesPage), findsOneWidget);

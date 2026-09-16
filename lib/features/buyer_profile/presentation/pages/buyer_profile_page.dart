@@ -9,6 +9,7 @@ import '../../../buyer_needs/presentation/pages/publish_buyer_need_page.dart';
 import '../../../buyer_products/presentation/pages/buyer_products_page.dart';
 import '../../../buyer_purchases/presentation/pages/buyer_purchases_page.dart';
 import '../../../home/presentation/widgets/buyer_bottom_navigation.dart';
+import '../../../home/presentation/widgets/farmer_glass_surface.dart';
 import '../../../buyer_payments/presentation/pages/buyer_payment_history_page.dart';
 import '../../../buyer_payments/presentation/pages/buyer_saved_payment_methods_page.dart';
 import '../../../buyer_notifications/presentation/pages/buyer_notifications_page.dart';
@@ -151,10 +152,22 @@ class _ProfileHero extends StatelessWidget {
       child: Stack(
         clipBehavior: Clip.none,
         children: [
-          Container(
-            height: 287,
-            width: double.infinity,
-            color: const Color(0xFF087C18),
+          const Positioned.fill(
+            top: 0,
+            bottom: 64,
+            child: FarmerGlassBackground(overlayOpacity: 0.42, blurSigma: 1),
+          ),
+          const Positioned.fill(
+            bottom: 64,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0x66131513), Color(0xCC063D22)],
+                ),
+              ),
+            ),
           ),
           Positioned(
             right: 22,

@@ -4,29 +4,28 @@ import 'onboarding_slide.dart';
 abstract final class OnboardingSlides {
   static const List<OnboardingSlide> items = [
     OnboardingSlide(
-      title: 'Bienvenue sur\nYOKKU MBEY',
-      description:
-          'Vendez, achetez, réservez et\ndéveloppez votre activité agricole en\ntoute simplicité.',
-      imageAsset: AppAssets.splashScreen1,
-      imageWidthFactor: 1.62,
-      imageHeightFactor: 1.18,
-    ),
+        label: 'Produire et vendre',
+        title: 'Faisons grandir\nvotre activité.',
+        description:
+            'Producteurs, acheteurs et partenaires, réunis autour de l’agriculture.',
+        imageAsset: AppAssets.onboardingFarmerLight,
+        imageWidthFactor: 1,
+        imageHeightFactor: 1),
     OnboardingSlide(
-      title:
-          'Trouvez facilement les\nmeilleurs produits\nagricoles de qualité.',
-      description:
-          "Connectez-vous avec les producteurs de\nvotre région et d'ailleurs.",
-      imageAsset: AppAssets.splashScreen2,
-      imageWidthFactor: 1.04,
-      imageHeightFactor: 1,
-    ),
+        label: 'Acheter et échanger',
+        title: 'Le marché,\nprès de chez vous.',
+        description:
+            'Trouvez vos produits et échangez directement avec les producteurs.',
+        imageAsset: AppAssets.splashScreen2,
+        imageWidthFactor: 1,
+        imageHeightFactor: 1),
     OnboardingSlide(
-      title: 'Propose vos services et\ntrouvez plus de clients\nfacilement',
-      description:
-          "Rejoignez des milliers d'agriculteurs qui\nont besoin de vos services chaque jour.",
-      imageAsset: AppAssets.splashScreen3,
-      imageWidthFactor: 1.08,
-      imageHeightFactor: 1,
-    ),
+        label: 'Accompagner et investir',
+        title: 'Des savoir-faire.\nDes projets d’avenir.',
+        description:
+            'Proposez vos services ou soutenez les projets du monde agricole.',
+        imageAsset: AppAssets.splashScreen3,
+        imageWidthFactor: 1,
+        imageHeightFactor: 1),
   ];
 }

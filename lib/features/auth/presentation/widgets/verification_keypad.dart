@@ -165,7 +165,7 @@ class _KeypadButton extends StatelessWidget {
                 Text(
                   item.value,
                   style: const TextStyle(
-                    color: AppColors.white,
+                    color: AppColors.ink,
                     fontSize: 19,
                     fontWeight: FontWeight.w800,
                     height: 1,
@@ -199,7 +199,7 @@ class _BackspaceButton extends StatelessWidget {
           child: const Center(
             child: Icon(
               Icons.backspace_outlined,
-              color: AppColors.white,
+              color: AppColors.ink,
               size: 23,
             ),
           ),

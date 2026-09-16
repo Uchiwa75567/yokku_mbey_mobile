@@ -8,6 +8,7 @@ import '../../../buyer_products/presentation/pages/buyer_product_detail_page.dar
 import '../../../buyer_products/presentation/pages/buyer_products_page.dart';
 import '../../../buyer_purchases/presentation/pages/buyer_purchases_page.dart';
 import '../../../home/presentation/widgets/buyer_bottom_navigation.dart';
+import '../../../home/presentation/widgets/farmer_glass_surface.dart';
 import '../../../buyer_profile/presentation/pages/buyer_profile_page.dart';
 import 'buyer_alert_detail_page.dart';
 
@@ -181,24 +182,41 @@ class _FavoritesHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: const Color(0xFF087C2E),
-      padding: const EdgeInsets.fromLTRB(47, 72, 30, 30),
-      child: const Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return const SizedBox(
+      height: 224,
+      child: Stack(
+        fit: StackFit.expand,
         children: [
-          Text(
-            'Favoris et alertes',
-            style: TextStyle(
-              color: AppColors.white,
-              fontSize: 27,
-              fontWeight: FontWeight.w800,
+          FarmerGlassBackground(overlayOpacity: 0.46, blurSigma: 1),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [Color(0x66131513), Color(0xCC063D22)],
+              ),
             ),
           ),
-          SizedBox(height: 8),
-          Text(
-            'Retrouvez vos produits suivis',
-            style: TextStyle(color: Color(0xFFE3F4E8), fontSize: 16),
+          Padding(
+            padding: EdgeInsets.fromLTRB(47, 64, 30, 28),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Favoris et alertes',
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontSize: 27,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'Retrouvez vos produits suivis',
+                  style: TextStyle(color: Color(0xFFE3F4E8), fontSize: 16),
+                ),
+              ],
+            ),
           ),
         ],
       ),

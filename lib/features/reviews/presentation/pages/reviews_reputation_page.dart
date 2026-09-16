@@ -1,200 +1,33 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
 import '../../../../core/theme/app_colors.dart';
-import '../../../home/presentation/widgets/farmer_glass_surface.dart';
+import '../../../../core/widgets/journey_scaffold.dart';
 
 class ReviewsReputationPage extends StatelessWidget {
   const ReviewsReputationPage({super.key});
-
   static const String routeName = '/reviews-reputation';
-  static const double _designWidth = 440;
-  static const double _designHeight = 956;
-
   @override
-  Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: AppColors.white,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-      child: Scaffold(
-        backgroundColor: const Color(0xFF18241D),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            final scale = (constraints.maxWidth / _designWidth).clamp(0.1, 1.0);
-            final scaledWidth = _designWidth * scale;
-            final scaledHeight = _designHeight * scale;
-
-            return Center(
-              child: SizedBox(
-                width: scaledWidth,
-                height: constraints.maxHeight,
-                child: SingleChildScrollView(
-                  child: SizedBox(
-                    width: scaledWidth,
-                    height: scaledHeight,
-                    child: const FittedBox(
-                      fit: BoxFit.fill,
-                      alignment: Alignment.topLeft,
-                      child: SizedBox(
-                        width: _designWidth,
-                        height: _designHeight,
-                        child: _ReviewsCanvas(),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class _ReviewsCanvas extends StatelessWidget {
-  const _ReviewsCanvas();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Stack(
-      children: [
-        Positioned.fill(
-          child: FarmerGlassBackground(overlayOpacity: 0.46),
-        ),
-        Positioned(
-          left: 0,
-          right: 0,
-          top: 0,
-          height: 201,
-          child: FarmerGlassSurface(
-            color: Color(0x1AFFFFFF),
-            blurSigma: 16,
-            borderRadius: BorderRadius.vertical(
-              bottom: Radius.circular(26),
-            ),
-            borderColor: Color(0x33FFFFFF),
-            child: SizedBox.expand(),
-          ),
-        ),
-        Positioned(
-          left: 12,
-          right: 12,
-          top: 185,
-          bottom: 18,
-          child: FarmerGlassSurface(
-            color: Color(0xE6FFFFFF),
-            blurSigma: 20,
-            borderRadius: BorderRadius.all(Radius.circular(28)),
-            borderColor: Color(0x66FFFFFF),
-            child: SizedBox.expand(),
-          ),
-        ),
-        Positioned(
-          left: 54,
-          right: 40,
-          top: 68,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Avis et réputation',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 27,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0,
-                ),
-              ),
-              SizedBox(height: 9),
-              Text(
-                'Votre crédibilité sur YOKKU',
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 0,
-                ),
-              ),
-            ],
-          ),
-        ),
-        Positioned(
-          left: 46,
-          right: 36,
-          top: 139,
-          child: _GlobalRatingCard(),
-        ),
-        Positioned(
-          left: 51,
-          top: 321,
-          child: Text(
-            'Détails',
-            style: TextStyle(
-              color: AppColors.ink,
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-            ),
-          ),
-        ),
-        Positioned(
-          left: 48,
-          right: 34,
-          top: 360,
-          child: Column(
-            children: [
-              _RatingDetail(label: 'Qualité des produits', rating: '4,9'),
-              SizedBox(height: 13),
-              _RatingDetail(label: 'Respect des quantités', rating: '4,8'),
-              SizedBox(height: 13),
-              _RatingDetail(label: 'Ponctualité', rating: '4,6'),
-              SizedBox(height: 13),
-              _RatingDetail(label: 'Communication', rating: '4,9'),
-            ],
-          ),
-        ),
-        Positioned(
-          left: 48,
-          top: 647,
-          child: Text(
-            'Derniers avis',
-            style: TextStyle(
-              color: AppColors.ink,
-              fontSize: 20,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0,
-            ),
-          ),
-        ),
-        Positioned(
-          left: 44,
-          right: 38,
-          top: 684,
-          child: Column(
-            children: [
-              _ReviewCard(
-                author: 'Marché Central Dakar',
-                rating: '5,0',
-                comment: 'Très bon produit et quantité respectée.',
-              ),
-              SizedBox(height: 17),
-              _ReviewCard(
-                author: 'Restaurant Teranga',
-                rating: '4,2',
-                comment: 'Livraison un peu tardive mais produit frais.',
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) =>
+      const JourneyScaffold(title: 'Avis et réputation', children: [
+        JourneyNotice(
+            'Exemples d’avis et de notes, présentés pour la démonstration.'),
+        _GlobalRatingCard(),
+        Divider(),
+        JourneyHeading('Détails'),
+        _RatingDetail(label: 'Qualité des produits', rating: '4,9'),
+        _RatingDetail(label: 'Respect des quantités', rating: '4,8'),
+        _RatingDetail(label: 'Ponctualité', rating: '4,6'),
+        _RatingDetail(label: 'Communication', rating: '4,9'),
+        Divider(),
+        JourneyHeading('Derniers avis'),
+        _ReviewCard(
+            author: 'Marché Central Dakar',
+            rating: '5,0',
+            comment: 'Très bon produit et quantité respectée.'),
+        _ReviewCard(
+            author: 'Restaurant Teranga',
+            rating: '4,2',
+            comment: 'Livraison un peu tardive mais produit frais.'),
+      ]);
 }
 
 class _GlobalRatingCard extends StatelessWidget {
@@ -206,7 +39,7 @@ class _GlobalRatingCard extends StatelessWidget {
       height: 157,
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(23),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -281,7 +114,7 @@ class _RatingDetail extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 17),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(13),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: const Color(0xFFF0F2F5)),
         boxShadow: [
           BoxShadow(
@@ -336,11 +169,10 @@ class _ReviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 96,
       padding: const EdgeInsets.fromLTRB(20, 20, 18, 15),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(color: const Color(0xFFF0F2F5)),
         boxShadow: [
           BoxShadow(
@@ -383,8 +215,6 @@ class _ReviewCard extends StatelessWidget {
           const SizedBox(height: 11),
           Text(
             comment,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: Color(0xFF6B7C95),
               fontSize: 15,

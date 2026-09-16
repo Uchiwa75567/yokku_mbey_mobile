@@ -27,6 +27,7 @@ class ProfileHomeAction {
     required this.icon,
     required this.color,
     required this.backgroundColor,
+    this.routeName,
   });
 
   final String title;
@@ -34,4 +35,5 @@ class ProfileHomeAction {
   final IconData icon;
   final Color color;
   final Color backgroundColor;
+  final String? routeName;
 }

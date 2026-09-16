@@ -17,9 +17,9 @@ void main() {
     expect(find.byType(OtpCodeBoxes), findsOneWidget);
     expect(
         tester.widget<OtpCodeBoxes>(find.byType(OtpCodeBoxes)).code, isEmpty);
-    expect(find.text('Renvoyer le code dans 00:45'), findsOneWidget);
+    expect(find.text('Renvoyer dans 60s'), findsOneWidget);
     expect(find.byType(VerificationKeypad), findsOneWidget);
-    expect(find.byType(SingleChildScrollView), findsNothing);
+    expect(find.byType(SingleChildScrollView), findsOneWidget);
     expect(find.byType(ListView), findsNothing);
     expect(find.byType(GridView), findsNothing);
   });
@@ -42,7 +42,7 @@ void main() {
     expect(find.byType(ProfileSelectionPage), findsNothing);
   });
 
-  testWidgets('opens profile selection after four random digits are entered', (
+  testWidgets('opens profile selection after the valid demo code is entered', (
     tester,
   ) async {
     tester.view.physicalSize = const Size(360, 825);
@@ -72,6 +72,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(ProfileSelectionPage), findsOneWidget);
-    expect(find.text('Vous êtes ?'), findsOneWidget);
+    expect(find.text('Quel espace souhaitez-vous utiliser ?'), findsOneWidget);
   });
 }

@@ -3,6 +3,8 @@ abstract final class AppAssets {
   static const String splashScreen1 = 'assets/images/splash_screen_1.png';
   static const String splashScreen2 = 'assets/images/splash_screen_2.png';
   static const String splashScreen3 = 'assets/images/splash_screen_3.png';
+  static const String onboardingFarmerLight =
+      'assets/images/onboarding_farmer_light.png';
   static const String onboardingBackground =
       'assets/images/onboarding_background.png';
   static const String senegalFlag = 'assets/images/senegal.png';

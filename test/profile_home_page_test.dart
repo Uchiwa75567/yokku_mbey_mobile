@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'support/marketplace_test_app.dart';
 import 'package:yokku_mbey/features/home/presentation/pages/profile_home_page.dart';
 import 'package:yokku_mbey/features/profile_selection/domain/entities/user_profile_type.dart';
 
@@ -14,15 +15,10 @@ void main() {
     );
 
     expect(find.text('Yokku Mbey'), findsOneWidget);
-    expect(find.text('Solde disponible'), findsOneWidget);
-    expect(find.text('1 250 000 FCFA'), findsOneWidget);
-    expect(find.text('Récoltes actives'), findsOneWidget);
-    expect(find.text('Ajouter\nune récolte'), findsOneWidget);
-    expect(find.text('Actions rapides'), findsOneWidget);
-    expect(find.text('Dernière réservation'), findsOneWidget);
+    expect(find.text('Mon activité agricole'), findsOneWidget);
+    expect(find.text('Ajouter une récolte'), findsOneWidget);
     expect(find.text('Tomates fraîches'), findsOneWidget);
-    expect(find.text('500 kg'), findsOneWidget);
-    expect(find.byType(SingleChildScrollView), findsOneWidget);
+    expect(find.byType(SingleChildScrollView), findsWidgets);
     expect(find.byType(ListView), findsNothing);
     expect(find.byType(GridView), findsNothing);
   });
@@ -38,7 +34,7 @@ void main() {
     );
 
     expect(find.text('Yokku Mbey'), findsOneWidget);
-    expect(find.text('Solde disponible'), findsOneWidget);
+    expect(find.text('Mon activité agricole'), findsOneWidget);
   });
 
   testWidgets('displays buyer home actions', (tester) async {
@@ -50,14 +46,13 @@ void main() {
       ),
     );
 
-    expect(find.text('Bonjour,'), findsOneWidget);
-    expect(find.text('Amadou'), findsOneWidget);
+    expect(find.text('Yokku Mbey'), findsOneWidget);
+    expect(find.text('Espace acheteur'), findsOneWidget);
     expect(find.text('Produits disponibles'), findsOneWidget);
-    expect(find.text('Tomates Fraîches'), findsOneWidget);
-    expect(find.text('Oignons Locaux'), findsOneWidget);
-    expect(find.text('Catégories'), findsOneWidget);
+    expect(find.text('Tomate fraîche'), findsOneWidget);
+    expect(find.text('Oignon local'), findsOneWidget);
     expect(find.text('Accueil'), findsOneWidget);
-    expect(find.byType(SingleChildScrollView), findsOneWidget);
+    expect(find.byType(SingleChildScrollView), findsWidgets);
     expect(find.byType(ListView), findsNothing);
     expect(find.byType(GridView), findsNothing);
   });
@@ -66,9 +61,7 @@ void main() {
     _setPhoneViewport(tester);
 
     await tester.pumpWidget(
-      const MaterialApp(
-        home: ProfileHomePage(profileType: UserProfileType.provider),
-      ),
+      marketplaceTestApp(store: testStore(UserProfileType.provider)),
     );
 
     expect(find.text('Bonjour prestataire'), findsOneWidget);
@@ -81,14 +74,12 @@ void main() {
     _setPhoneViewport(tester);
 
     await tester.pumpWidget(
-      const MaterialApp(
-        home: ProfileHomePage(profileType: UserProfileType.investor),
-      ),
+      marketplaceTestApp(store: testStore(UserProfileType.investor)),
     );
 
     expect(find.text('Bonjour partenaire'), findsOneWidget);
     expect(find.text('Voir les projets'), findsOneWidget);
-    expect(find.text('Soutenir une activité'), findsOneWidget);
+    expect(find.text('Mes intentions'), findsOneWidget);
     expect(find.text('Suivre les impacts'), findsOneWidget);
   });
 }

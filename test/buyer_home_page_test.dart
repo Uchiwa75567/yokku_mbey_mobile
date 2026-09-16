@@ -1,74 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:yokku_mbey/features/buyer_products/presentation/pages/buyer_products_page.dart';
-import 'package:yokku_mbey/features/home/presentation/pages/buyer_home_page.dart';
+import 'package:yokku_mbey/features/buyer/presentation/buyer_journey_pages.dart';
+import 'package:yokku_mbey/features/profile_selection/domain/entities/user_profile_type.dart';
+import 'support/marketplace_test_app.dart';
 
 void main() {
-  testWidgets('matches the premium Stitch buyer home structure', (
-    tester,
-  ) async {
-    _setPhoneViewport(tester);
-
+  testWidgets('buyer home matches the approved light market layout',
+      (tester) async {
+    _phone(tester);
     await tester.pumpWidget(
-      MaterialApp(
-        routes: {
-          BuyerProductsPage.routeName: (_) => const BuyerProductsPage(),
-        },
-        home: const BuyerHomePage(),
-      ),
-    );
-
-    expect(find.text('Bonjour,'), findsOneWidget);
-    expect(find.text('Amadou'), findsOneWidget);
-    expect(find.bySemanticsLabel('Notifications'), findsOneWidget);
-    expect(find.bySemanticsLabel('Rechercher un produit'), findsOneWidget);
-    expect(find.bySemanticsLabel('Filtrer les produits'), findsOneWidget);
-    expect(find.text('Catégories'), findsOneWidget);
-    expect(find.text('Légumes'), findsOneWidget);
-    expect(find.text('Fruits'), findsOneWidget);
-    expect(find.text('Céréales'), findsOneWidget);
-    expect(find.text('Tubercules'), findsOneWidget);
+        marketplaceTestApp(store: testStore(UserProfileType.buyer)));
+    expect(find.text('Yokku Mbey'), findsOneWidget);
+    expect(find.text('Espace acheteur'), findsOneWidget);
     expect(find.text('Produits disponibles'), findsOneWidget);
-    expect(find.text('Tomates Fraîches'), findsOneWidget);
-    expect(find.text('450 FCFA/kg'), findsOneWidget);
-    expect(find.text('Niayes, Sénégal'), findsOneWidget);
-    expect(find.text('Oignons Locaux'), findsOneWidget);
-    expect(find.text('300 FCFA/kg'), findsOneWidget);
-    expect(find.text('Podor, Sénégal'), findsOneWidget);
-    expect(find.text('4.8'), findsOneWidget);
-    expect(find.byType(PageView), findsOneWidget);
-    expect(find.bySemanticsLabel('Action principale'), findsOneWidget);
+    expect(find.text('Tomate fraîche'), findsOneWidget);
+    expect(find.text('Oignon local'), findsOneWidget);
+    expect(find.text('400 FCFA / kg'), findsOneWidget);
+    expect(find.byType(ProductGrid), findsOneWidget);
+    expect(find.text('Marché'), findsOneWidget);
+    expect(find.text('Achats'), findsOneWidget);
+    expect(find.bySemanticsLabel('Publier une demande'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
-
-  testWidgets('opens the product catalogue from premium search', (
-    tester,
-  ) async {
-    _setPhoneViewport(tester);
-
+  testWidgets('home search filters products and navigation opens the market',
+      (tester) async {
+    _phone(tester);
     await tester.pumpWidget(
-      MaterialApp(
-        routes: {
-          BuyerProductsPage.routeName: (_) => const BuyerProductsPage(),
-        },
-        home: const BuyerHomePage(),
-      ),
-    );
-
-    await tester.tap(find.bySemanticsLabel('Rechercher un produit'));
+        marketplaceTestApp(store: testStore(UserProfileType.buyer)));
+    await tester.enterText(find.byType(TextField), 'oignon');
     await tester.pumpAndSettle();
-
-    expect(find.byType(BuyerProductsPage), findsOneWidget);
-    expect(find.text('Trouvez des produits disponibles'), findsOneWidget);
-    expect(tester.takeException(), isNull);
+    expect(find.text('Tomate fraîche'), findsNothing);
+    expect(find.text('Oignon local'), findsOneWidget);
+    await tester.tap(find.text('Marché'));
+    await tester.pumpAndSettle();
+    expect(find.byType(BuyerMarketPage), findsOneWidget);
+    expect(find.text('Le marché'), findsOneWidget);
   });
 }
 
-void _setPhoneViewport(WidgetTester tester) {
+void _phone(WidgetTester tester) {
   tester.view.physicalSize = const Size(390, 844);
   tester.view.devicePixelRatio = 1;
-  addTearDown(() {
-    tester.view.resetPhysicalSize();
-    tester.view.resetDevicePixelRatio();
-  });
+  addTearDown(tester.view.reset);
 }

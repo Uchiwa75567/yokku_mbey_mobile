@@ -5,8 +5,6 @@ import 'profile_option.dart';
 import 'user_profile_type.dart';
 
 abstract final class ProfileOptions {
-  static const int defaultSelectedIndex = 2;
-
   static const List<ProfileOption> items = [
     ProfileOption(
       type: UserProfileType.farmer,
@@ -27,7 +25,7 @@ abstract final class ProfileOptions {
     ProfileOption(
       type: UserProfileType.provider,
       title: 'Prestataire',
-      description: 'Je fournis des services',
+      description: 'Je travaille aux champs ou propose un service',
       icon: Icons.hub_outlined,
       color: AppColors.leaf,
       backgroundColor: AppColors.greenSoft,

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../core/data/marketplace_models.dart';
+import '../core/widgets/journey_scaffold.dart';
+import '../features/buyer/presentation/buyer_journey_pages.dart';
+import '../features/account/presentation/account_pages.dart';
 
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/verification_page.dart';
@@ -47,6 +51,8 @@ import '../features/reservations/presentation/pages/reservation_detail_page.dart
 import '../features/splash/presentation/pages/splash_page.dart';
 import '../features/stock_management/presentation/pages/stock_management_page.dart';
 import '../features/reviews/presentation/pages/reviews_reputation_page.dart';
+import '../features/stakeholders/presentation/pages/stakeholder_pages.dart';
+import '../features/stakeholders/presentation/pages/service_directory_pages.dart';
 
 abstract final class AppRoutes {
   static const String splash = SplashPage.routeName;
@@ -113,6 +119,47 @@ abstract final class AppRoutes {
   static const String buyerActionSuccess = BuyerActionSuccessPage.routeName;
   static const String buyerSavedPaymentMethods =
       BuyerSavedPaymentMethodsPage.routeName;
+  static const String providerServiceForm = ProviderServiceFormPage.routeName;
+  static const String providerRequests = ProviderRequestsPage.routeName;
+  static const String providerContacts = ProviderContactsPage.routeName;
+  static const String investorProjects = InvestorProjectsPage.routeName;
+  static const String investorFunding = InvestorFundingPage.routeName;
+  static const String investorImpact = InvestorImpactPage.routeName;
+
+  static String _id(BuildContext context) => _optionalId(context) ?? '';
+  static String? _optionalId(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments;
+    return args is String && args.isNotEmpty ? args : null;
+  }
+
+  static const _missing =
+      JourneyScaffold(title: 'Élément introuvable', children: [
+    JourneyNotice(
+        'Revenez à la liste pour sélectionner un élément disponible.'),
+  ]);
+  static Widget _productView(BuildContext context, bool reserve) {
+    final id = _id(context);
+    if (!MarketplaceCatalog.products.any((p) => p.id == id)) return _missing;
+    return reserve
+        ? BuyerReservationForm(productId: id)
+        : BuyerProductPage(productId: id);
+  }
+
+  static Widget _projectView(BuildContext context, bool commit) {
+    final id = _id(context);
+    if (!MarketplaceCatalog.projects.any((p) => p.id == id)) return _missing;
+    return commit
+        ? InvestorCommitmentPage(projectId: id)
+        : InvestorProjectDetailPage(projectId: id);
+  }
+
+  static Widget _requestView(BuildContext context, bool quote) {
+    final id = _id(context);
+    if (!MarketplaceCatalog.requests.any((p) => p.id == id)) return _missing;
+    return quote
+        ? ProviderQuotePage(requestId: id)
+        : ProviderRequestDetailPage(requestId: id);
+  }
 
   static Map<String, WidgetBuilder> get routes {
     return {
@@ -141,40 +188,89 @@ abstract final class AppRoutes {
       settings: (_) => const SettingsPage(),
       helpSupport: (_) => const HelpSupportPage(),
       notifications: (_) => const NotificationsPage(),
-      buyerProducts: (_) => const BuyerProductsPage(),
-      buyerProductDetail: BuyerProductDetailPage.fromRoute,
-      buyerEmptySearch: BuyerEmptySearchPage.fromRoute,
-      preReservation: PreReservationPage.fromRoute,
-      productReservation: ProductReservationPage.fromRoute,
-      buyerPayment: BuyerPaymentPage.fromRoute,
-      buyerReservationConfirmation: BuyerReservationConfirmationPage.fromRoute,
-      buyerPurchases: BuyerPurchasesPage.fromRoute,
-      buyerOrderTracking: BuyerOrderTrackingPage.fromRoute,
-      publishBuyerNeed: PublishBuyerNeedPage.fromRoute,
-      buyerNeeds: (_) => const BuyerNeedsPage(),
-      buyerFavorites: (_) => const BuyerFavoritesPage(),
-      buyerCreateAlert: BuyerCreateAlertPage.fromRoute,
-      buyerProfile: (_) => const BuyerProfilePage(),
-      buyerDeliveryAddresses: (_) => const BuyerDeliveryAddressesPage(),
-      buyerAddressForm: BuyerAddressFormPage.fromRoute,
-      buyerPaymentHistory: (_) => const BuyerPaymentHistoryPage(),
-      buyerPaymentDetail: BuyerPaymentDetailPage.fromRoute,
-      buyerNeedDetail: BuyerNeedDetailPage.fromRoute,
-      buyerRateTransaction: BuyerRateTransactionPage.fromRoute,
-      buyerProposals: BuyerProposalsPage.fromRoute,
-      buyerProposalDetail: BuyerProposalDetailPage.fromRoute,
-      buyerNotifications: (_) => const BuyerNotificationsPage(),
-      buyerReportProblem: BuyerReportProblemPage.fromRoute,
-      buyerPersonalInfo: (_) => const BuyerPersonalInfoPage(),
-      buyerSettings: (_) => const BuyerSettingsPage(),
-      buyerHelpSupport: (_) => const BuyerHelpSupportPage(),
-      buyerReputation: (_) => const BuyerReputationPage(),
-      buyerAlertDetail: (_) => const BuyerAlertDetailPage(),
-      buyerIssueDetail: BuyerIssueDetailPage.fromRoute,
-      buyerProposalAccepted: BuyerProposalAcceptedPage.fromRoute,
-      buyerProposalPayment: BuyerProposalPaymentPage.fromRoute,
-      buyerActionSuccess: BuyerActionSuccessPage.fromRoute,
-      buyerSavedPaymentMethods: (_) => const BuyerSavedPaymentMethodsPage(),
+      buyerProducts: (context) => BuyerMarketPage(
+          initialCategory: ['Légumes', 'Fruits', 'Céréales', 'Tubercules']
+                  .contains(_id(context))
+              ? _id(context)
+              : 'Tous'),
+      buyerProductDetail: (context) => _productView(context, false),
+      buyerEmptySearch: (_) => const BuyerMarketPage(),
+      preReservation: (context) => _productView(context, true),
+      productReservation: (context) => _productView(context, true),
+      buyerPayment: (_) => const AccountPaymentsPage(),
+      buyerReservationConfirmation: (context) =>
+          BuyerReservationSuccess(orderId: _id(context)),
+      buyerPurchases: (_) => const BuyerRecordsPage(kind: RecordKind.order),
+      buyerOrderTracking: (context) =>
+          RecordDetailsPage(recordId: _id(context)),
+      publishBuyerNeed: (context) =>
+          BuyerNeedsForm(needId: _optionalId(context)),
+      buyerNeeds: (_) => const BuyerRecordsPage(kind: RecordKind.need),
+      buyerFavorites: (_) => const BuyerMarketPage(favoritesOnly: true),
+      buyerCreateAlert: (_) =>
+          const AccountFormPage(kind: AccountFormKind.alert),
+      buyerProfile: (_) => const AccountProfilePage(),
+      buyerDeliveryAddresses: (_) =>
+          const AccountListPage(kind: RecordKind.address),
+      buyerAddressForm: (context) => AccountFormPage(
+          kind: AccountFormKind.address, recordId: _optionalId(context)),
+      buyerPaymentHistory: (_) => const AccountPaymentsPage(),
+      buyerPaymentDetail: (_) => const AccountPaymentsPage(),
+      buyerNeedDetail: (context) => RecordDetailsPage(recordId: _id(context)),
+      buyerRateTransaction: (context) =>
+          AccountFormPage(kind: AccountFormKind.review, recordId: _id(context)),
+      buyerProposals: (context) =>
+          BuyerMatchingOffersPage(needId: _id(context)),
+      buyerProposalDetail: (context) => _productView(context, false),
+      buyerNotifications: (_) => const AccountNotificationsPage(),
+      buyerReportProblem: (context) => AccountFormPage(
+          kind: AccountFormKind.support, recordId: _optionalId(context)),
+      buyerPersonalInfo: (_) =>
+          const AccountFormPage(kind: AccountFormKind.personal),
+      buyerSettings: (_) => const AccountSettingsPage(),
+      buyerHelpSupport: (_) => const AccountHelpPage(),
+      buyerReputation: (_) => const AccountListPage(kind: RecordKind.review),
+      buyerAlertDetail: (_) => const AccountListPage(kind: RecordKind.alert),
+      buyerIssueDetail: (context) => RecordDetailsPage(recordId: _id(context)),
+      buyerProposalAccepted: (context) => _productView(context, true),
+      buyerProposalPayment: (_) => const AccountPaymentsPage(),
+      buyerActionSuccess: (_) => const BuyerRecordsPage(kind: RecordKind.need),
+      buyerSavedPaymentMethods: (_) => const AccountPaymentsPage(),
+      providerServiceForm: (context) =>
+          ProviderServiceFormPage(serviceId: _optionalId(context)),
+      providerRequests: (_) => const ProviderRequestsPage(),
+      providerContacts: (_) => const ProviderContactsPage(),
+      investorProjects: (_) => const InvestorProjectsPage(),
+      investorFunding: (_) => const InvestorFundingPage(),
+      investorImpact: (_) => const InvestorImpactPage(),
+      '/account-profile': (_) => const AccountProfilePage(),
+      '/account-personal': (_) =>
+          const AccountFormPage(kind: AccountFormKind.personal),
+      '/account-settings': (_) => const AccountSettingsPage(),
+      '/account-help': (_) => const AccountHelpPage(),
+      '/account-notifications': (_) => const AccountNotificationsPage(),
+      '/account-issues': (_) => const AccountListPage(kind: RecordKind.issue),
+      '/account-report': (_) =>
+          const AccountFormPage(kind: AccountFormKind.support),
+      '/buyer-alerts': (_) => const AccountListPage(kind: RecordKind.alert),
+      '/record-detail': (context) => RecordDetailsPage(recordId: _id(context)),
+      '/provider-services': (_) => const ProviderServicesPage(),
+      '/provider-directory': (_) => const ServiceDirectoryPage(),
+      '/provider-service-detail': (context) =>
+          ServiceDetailPage(serviceId: _id(context)),
+      '/farmer-services': (_) => const ServiceDirectoryPage(),
+      '/farmer-service-detail': (context) =>
+          ServiceDetailPage(serviceId: _id(context)),
+      '/farmer-service-request': (context) =>
+          FarmerServiceRequestForm(serviceId: _id(context)),
+      '/farmer-service-requests': (_) => const FarmerServiceRequestsPage(),
+      '/service-request-detail': (context) =>
+          ServiceRequestDetailPage(requestId: _id(context)),
+      '/provider-jobs': (_) => const ProviderJobsPage(),
+      '/provider-request-detail': (context) => _requestView(context, false),
+      '/provider-quote': (context) => _requestView(context, true),
+      '/investor-project-detail': (context) => _projectView(context, false),
+      '/investor-commitment': (context) => _projectView(context, true),
     };
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:yokku_mbey/app/app_routes.dart';
+import 'support/marketplace_test_app.dart';
+import 'package:yokku_mbey/features/profile_selection/domain/entities/user_profile_type.dart';
 import 'package:yokku_mbey/features/buyer_favorites/presentation/pages/buyer_alert_detail_page.dart';
 import 'package:yokku_mbey/features/buyer_favorites/presentation/pages/buyer_create_alert_page.dart';
 import 'package:yokku_mbey/features/buyer_needs/presentation/pages/buyer_proposal_checkout_pages.dart';
@@ -28,7 +29,8 @@ void main() {
       BuyerSavedPaymentMethodsPage.routeName,
     ]) {
       await tester.pumpWidget(
-        MaterialApp(initialRoute: route, routes: AppRoutes.routes),
+        marketplaceTestApp(
+            store: testStore(UserProfileType.buyer), route: route),
       );
       await tester.pumpAndSettle();
       expect(find.byType(Scaffold), findsWidgets);

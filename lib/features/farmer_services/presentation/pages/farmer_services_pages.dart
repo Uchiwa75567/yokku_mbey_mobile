@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import '../../../../core/widgets/journey_scaffold.dart';
 
 import '../../../../core/theme/app_colors.dart';
-import '../../../home/presentation/widgets/farmer_glass_surface.dart';
 import 'farmer_marketplace_pages.dart';
 
 class PaymentsWithdrawalsPage extends StatelessWidget {
@@ -427,160 +426,34 @@ class _NotificationsPageState extends State<NotificationsPage> {
 }
 
 class _SectionPage extends StatelessWidget {
-  const _SectionPage({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.children,
-    this.hero,
-    this.actionLabel,
-    this.onAction,
-    this.headerAction,
-  });
-
-  final String title;
-  final String subtitle;
+  const _SectionPage(
+      {required this.title,
+      required this.subtitle,
+      required this.icon,
+      required this.children,
+      this.hero,
+      this.actionLabel,
+      this.onAction,
+      this.headerAction});
+  final String title, subtitle;
   final IconData icon;
   final List<Widget> children;
-  final Widget? hero;
+  final Widget? hero, headerAction;
   final String? actionLabel;
   final VoidCallback? onAction;
-  final Widget? headerAction;
-
   @override
-  Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.viewPaddingOf(context).bottom;
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.transparent,
-        systemNavigationBarColor: const Color(0xFF18241D),
-        systemNavigationBarIconBrightness: Brightness.light,
-      ),
-      child: Scaffold(
-        backgroundColor: const Color(0xFF18241D),
-        body: Stack(
-          children: [
-            const Positioned.fill(
-              child: FarmerGlassBackground(overlayOpacity: 0.46),
-            ),
-            CustomScrollView(
-              slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    padding: const EdgeInsets.fromLTRB(20, 56, 20, 30),
-                    decoration: const BoxDecoration(
-                      color: Color(0x99131513),
-                      borderRadius: BorderRadius.vertical(
-                        bottom: Radius.circular(30),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            _BackButton(
-                                onTap: () => Navigator.of(context).pop()),
-                            const Spacer(),
-                            if (headerAction != null)
-                              DefaultTextStyle.merge(
-                                style: const TextStyle(color: AppColors.white),
-                                child: headerAction!,
-                              ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        Row(
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.16),
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child:
-                                  Icon(icon, color: AppColors.white, size: 27),
-                            ),
-                            const SizedBox(width: 15),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    title,
-                                    style: const TextStyle(
-                                      color: AppColors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.w800,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    subtitle,
-                                    style: const TextStyle(
-                                      color: Color(0xFFD7F2E0),
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                SliverPadding(
-                  padding: EdgeInsets.fromLTRB(18, 20, 18, 24 + bottomInset),
-                  sliver: SliverList.list(
-                    children: [
-                      if (hero != null) ...[hero!, const SizedBox(height: 20)],
-                      ...children.expand(
-                        (child) => [child, const SizedBox(height: 12)],
-                      ),
-                      if (actionLabel != null) ...[
-                        const SizedBox(height: 8),
-                        FilledButton.icon(
-                          onPressed: onAction,
-                          icon: const Icon(Icons.add_rounded),
-                          label: Text(actionLabel!),
-                          style: FilledButton.styleFrom(
-                            minimumSize: const Size.fromHeight(54),
-                            backgroundColor: const Color(0xFF087C3A),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onTap});
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton.filled(
-      onPressed: onTap,
-      style: IconButton.styleFrom(
-        backgroundColor: Colors.white.withValues(alpha: 0.16),
-      ),
-      icon: const Icon(Icons.arrow_back_rounded, color: AppColors.white),
-    );
-  }
+  Widget build(BuildContext context) =>
+      JourneyScaffold(title: title, subtitle: subtitle, actions: [
+        if (headerAction != null) headerAction!
+      ], children: [
+        if (hero != null) hero!,
+        ...children,
+        if (actionLabel != null)
+          JourneyButton(
+              label: actionLabel!,
+              icon: Icons.add,
+              onPressed: onAction == null ? null : () async => onAction!()),
+      ]);
 }
 
 class _SectionTitle extends StatelessWidget {
@@ -630,14 +503,14 @@ class _InfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: AppColors.white,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(color: const Color(0xFFE8ECE9)),
           ),
           child: Row(
@@ -647,7 +520,7 @@ class _InfoCard extends StatelessWidget {
                 height: 46,
                 decoration: BoxDecoration(
                   color: iconBackground,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(icon, color: iconColor, size: 23),
               ),
@@ -693,7 +566,7 @@ class _InfoCard extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
                   decoration: BoxDecoration(
                     color: const Color(0xFFEAF7EF),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
                     badge!,
@@ -726,7 +599,7 @@ class _BalanceHero extends StatelessWidget {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.07),
@@ -773,7 +646,7 @@ class _MiniMetric extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: const Color(0xFFF1F8F3),
-        borderRadius: BorderRadius.circular(13),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -800,7 +673,7 @@ class _SummaryStrip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 17),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: items
@@ -846,7 +719,7 @@ class _SearchPanel extends StatelessWidget {
         filled: true,
         fillColor: AppColors.white,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
         ),
       ),
@@ -862,10 +735,8 @@ class _FeaturedCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFFA927), Color(0xFFF27A19)],
-        ),
-        borderRadius: BorderRadius.circular(22),
+        color: const Color(0xFFFFF3D6),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -873,7 +744,7 @@ class _FeaturedCard extends StatelessWidget {
           Text(
             'APPEL À PROJETS',
             style: TextStyle(
-              color: AppColors.white,
+              color: AppColors.ink,
               fontSize: 11,
               fontWeight: FontWeight.w800,
             ),
@@ -882,7 +753,7 @@ class _FeaturedCard extends StatelessWidget {
           Text(
             'Équipez votre exploitation',
             style: TextStyle(
-              color: AppColors.white,
+              color: AppColors.ink,
               fontSize: 21,
               fontWeight: FontWeight.w800,
             ),
@@ -890,13 +761,13 @@ class _FeaturedCard extends StatelessWidget {
           SizedBox(height: 6),
           Text(
             'Subvention jusqu’à 60 % pour du matériel agricole.',
-            style: TextStyle(color: Color(0xFFFFF4DF), height: 1.4),
+            style: TextStyle(color: AppColors.mutedInk, height: 1.4),
           ),
           SizedBox(height: 16),
           Text(
             'Candidater avant le 15 août  →',
             style: TextStyle(
-              color: AppColors.white,
+              color: AppColors.ink,
               fontWeight: FontWeight.w800,
             ),
           ),
@@ -938,7 +809,7 @@ class _ToggleCard extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(15, 10, 8, 10),
       decoration: BoxDecoration(
         color: AppColors.white,
-        borderRadius: BorderRadius.circular(17),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
@@ -978,11 +849,11 @@ class _SupportBanner extends StatelessWidget {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: const Color(0xFF0A6F38),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Row(
         children: [
-          const Icon(Icons.support_agent_rounded, color: AppColors.white),
+          const Icon(Icons.support_agent_rounded, color: AppColors.leaf),
           const SizedBox(width: 13),
           const Expanded(
             child: Column(
@@ -991,13 +862,13 @@ class _SupportBanner extends StatelessWidget {
                 Text(
                   'Besoin d’aide ?',
                   style: TextStyle(
-                    color: AppColors.white,
+                    color: AppColors.ink,
                     fontWeight: FontWeight.w800,
                   ),
                 ),
                 Text(
                   'Notre équipe vous répond rapidement',
-                  style: TextStyle(color: Color(0xFFD7F2E0), fontSize: 11),
+                  style: TextStyle(color: AppColors.mutedInk, fontSize: 11),
                 ),
               ],
             ),
@@ -1006,7 +877,7 @@ class _SupportBanner extends StatelessWidget {
             onPressed: onTap,
             child: const Text(
               'Contacter',
-              style: TextStyle(color: AppColors.white),
+              style: TextStyle(color: AppColors.ink),
             ),
           ),
         ],
@@ -1059,7 +930,7 @@ class _NotificationCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: unread ? const Color(0xFFF0F9F3) : AppColors.white,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: unread ? const Color(0xFFCFE9D7) : const Color(0xFFE8ECE9),
         ),

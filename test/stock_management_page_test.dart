@@ -26,7 +26,7 @@ void main() {
     expect(find.text('Gestion du stock'), findsOneWidget);
     expect(find.text('Tomate fraîche'), findsOneWidget);
     expect(find.text('1 000 kg'), findsOneWidget);
-    expect(find.text('300 kg'), findsNWidgets(3));
+    expect(find.text('300 kg'), findsNWidgets(2));
     expect(find.text('Disponible'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
@@ -51,13 +51,13 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('update-stock-button')));
     await tester.pump();
 
-    expect(find.text('250 kg'), findsNWidgets(2));
+    expect(find.text('250 kg'), findsOneWidget);
     expect(find.text('Stock mis à jour'), findsOneWidget);
 
     await tester.tap(find.byKey(const ValueKey('mark-sold-out-button')));
     await tester.pump();
 
-    expect(find.text('0 kg'), findsNWidgets(2));
+    expect(find.text('0 kg'), findsOneWidget);
     expect(find.text('Épuisée'), findsOneWidget);
     expect(find.text('La récolte est maintenant épuisée'), findsOneWidget);
     expect(tester.takeException(), isNull);

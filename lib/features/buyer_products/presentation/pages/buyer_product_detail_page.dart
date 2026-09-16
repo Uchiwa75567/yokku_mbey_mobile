@@ -186,7 +186,7 @@ class BuyerProductDetailPage extends StatelessWidget {
                           width: _designWidth,
                           height: BuyerBottomNavigation.designHeight,
                           child: BuyerBottomNavigation(
-                            activeTab: BuyerNavigationTab.home,
+                            activeTab: BuyerNavigationTab.search,
                             onPrimaryAction: () => Navigator.of(
                               context,
                             ).pushNamed(PublishBuyerNeedPage.routeName),

@@ -15,13 +15,14 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(find.text('Modifier').first);
     await tester.tap(find.text('Modifier').first);
     await tester.pumpAndSettle();
 
     expect(find.byType(HarvestEditPage), findsOneWidget);
     expect(find.text('Modifier la récolte'), findsOneWidget);
-    expect(find.text('18 réservations déjà reçues'), findsOneWidget);
-    expect(find.text('Tomate fraîche'), findsNWidgets(2));
+    expect(find.text('Informations de vente'), findsOneWidget);
+    expect(find.text('Tomate fraîche'), findsOneWidget);
     expect(find.text('400 FCFA/kg'), findsOneWidget);
     expect(find.text('300 kg'), findsOneWidget);
     expect(find.text('50 kg'), findsOneWidget);
@@ -44,6 +45,7 @@ void main() {
     tester.testTextInput.hide();
     await tester.pumpAndSettle();
 
+    await tester.ensureVisible(find.text('Enregistrer les modifications'));
     await tester.tap(find.text('Enregistrer les modifications'));
     await tester.pump();
 
@@ -57,10 +59,7 @@ Future<void> _enterField(
   String fieldKey,
   String value,
 ) async {
-  final field = find.descendant(
-    of: find.byKey(ValueKey(fieldKey)),
-    matching: find.byType(TextFormField),
-  );
+  final field = find.byKey(ValueKey(fieldKey));
   await tester.enterText(field, value);
   await tester.pump();
 }

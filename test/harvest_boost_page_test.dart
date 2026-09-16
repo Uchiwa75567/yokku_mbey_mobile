@@ -15,13 +15,14 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(find.text('Booster').first);
     await tester.tap(find.text('Booster').first);
     await tester.pumpAndSettle();
 
     expect(find.byType(HarvestBoostPage), findsOneWidget);
-    expect(find.text('Booster l’annonce'), findsOneWidget);
+    expect(find.text('Booster ma récolte'), findsOneWidget);
     expect(find.text('Tomate fraîche'), findsOneWidget);
-    expect(find.text('Payer 1000 FCFA'), findsOneWidget);
+    expect(find.text('Continuer'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 
@@ -36,24 +37,27 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(find.text('Boost 24 h'));
     await tester.tap(find.text('Boost 24 h'));
     await tester.pump();
-    expect(find.text('Payer 500 FCFA'), findsOneWidget);
+    expect(find.text('Continuer'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Wave / Orange Money / Carte'));
     await tester.tap(find.text('Wave / Orange Money / Carte'));
     await tester.pumpAndSettle();
     expect(find.text('Wave'), findsOneWidget);
     expect(find.text('Orange Money'), findsOneWidget);
     expect(find.text('Carte bancaire'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Wave'));
     await tester.tap(find.text('Wave'));
     await tester.pumpAndSettle();
     expect(find.text('Wave'), findsOneWidget);
 
-    await tester.tap(find.text('Payer 500 FCFA'));
+    await tester.ensureVisible(find.text('Continuer'));
+    await tester.tap(find.text('Continuer'));
     await tester.pump();
-    expect(
-        find.textContaining('Paiement de 500 FCFA avec Wave'), findsOneWidget);
+    expect(find.textContaining('Aperçu : 500 FCFA via Wave'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

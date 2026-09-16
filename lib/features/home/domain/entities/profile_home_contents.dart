@@ -83,6 +83,7 @@ abstract final class ProfileHomeContents {
         icon: Icons.add_business_outlined,
         color: AppColors.leaf,
         backgroundColor: AppColors.greenSoft,
+        routeName: '/provider-service-form',
       ),
       ProfileHomeAction(
         title: 'Voir les demandes',
@@ -90,6 +91,7 @@ abstract final class ProfileHomeContents {
         icon: Icons.handshake_outlined,
         color: AppColors.orange,
         backgroundColor: AppColors.orangeSoft,
+        routeName: '/provider-requests',
       ),
       ProfileHomeAction(
         title: 'Gérer mes contacts',
@@ -97,6 +99,7 @@ abstract final class ProfileHomeContents {
         icon: Icons.phone_in_talk_outlined,
         color: AppColors.blue,
         backgroundColor: AppColors.blueSoft,
+        routeName: '/provider-contacts',
       ),
     ],
   );
@@ -115,6 +118,7 @@ abstract final class ProfileHomeContents {
         icon: Icons.account_tree_outlined,
         color: AppColors.leaf,
         backgroundColor: AppColors.greenSoft,
+        routeName: '/investor-projects',
       ),
       ProfileHomeAction(
         title: 'Soutenir une activité',
@@ -122,6 +126,7 @@ abstract final class ProfileHomeContents {
         icon: Icons.volunteer_activism_outlined,
         color: AppColors.orange,
         backgroundColor: AppColors.orangeSoft,
+        routeName: '/investor-funding',
       ),
       ProfileHomeAction(
         title: 'Suivre les impacts',
@@ -129,6 +134,7 @@ abstract final class ProfileHomeContents {
         icon: Icons.insights_outlined,
         color: AppColors.blue,
         backgroundColor: AppColors.blueSoft,
+        routeName: '/investor-impact',
       ),
     ],
   );

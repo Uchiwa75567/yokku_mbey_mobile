@@ -17,11 +17,15 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(find.text('Avis et réputation'));
     await tester.tap(find.text('Avis et réputation'));
     await tester.pumpAndSettle();
 
     expect(find.byType(ReviewsReputationPage), findsOneWidget);
-    expect(find.text('Votre crédibilité sur YOKKU'), findsOneWidget);
+    expect(
+        find.text(
+            'Exemples d’avis et de notes, présentés pour la démonstration.'),
+        findsOneWidget);
     expect(find.text('4,8'), findsOneWidget);
     expect(find.text('4,8 ★'), findsOneWidget);
     expect(find.text('32 avis'), findsOneWidget);

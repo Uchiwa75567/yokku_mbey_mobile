@@ -94,12 +94,12 @@ class _FarmerProductResponsePageState extends State<FarmerProductResponsePage> {
   Widget build(BuildContext context) {
     final data = widget.data;
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
+      value: SystemUiOverlayStyle.dark,
       child: Scaffold(
-        backgroundColor: const Color(0xFF18241D),
+        backgroundColor: const Color(0xFFFFFFFF),
         appBar: AppBar(
-          backgroundColor: const Color(0xCC131513),
-          foregroundColor: Colors.white,
+          backgroundColor: Colors.white,
+          foregroundColor: AppColors.ink,
           surfaceTintColor: Colors.transparent,
           elevation: 0,
           title: const Text('Répondre à la demande'),
@@ -115,9 +115,9 @@ class _FarmerProductResponsePageState extends State<FarmerProductResponsePage> {
                 child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: FarmerGlassSurface(
-                    color: const Color(0xE6FFFFFF),
+                    color: Colors.white,
                     blurSigma: 20,
-                    borderRadius: BorderRadius.circular(28),
+                    borderRadius: BorderRadius.circular(8),
                     borderColor: const Color(0x66FFFFFF),
                     child: Form(
                       key: _formKey,
@@ -235,10 +235,10 @@ class _SeedSearchPageState extends State<SeedSearchPage> {
         .toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFF18241D),
+      backgroundColor: const Color(0xFFFFFFFF),
       appBar: AppBar(
-        backgroundColor: const Color(0xCC131513),
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        foregroundColor: AppColors.ink,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         title: const Text('Rechercher des semences'),
@@ -252,9 +252,9 @@ class _SeedSearchPageState extends State<SeedSearchPage> {
             child: Padding(
               padding: const EdgeInsets.all(12),
               child: FarmerGlassSurface(
-                color: const Color(0xE6FFFFFF),
+                color: Colors.white,
                 blurSigma: 20,
-                borderRadius: BorderRadius.circular(28),
+                borderRadius: BorderRadius.circular(8),
                 borderColor: const Color(0x66FFFFFF),
                 child: ListView(
                   padding: const EdgeInsets.all(20),
@@ -268,7 +268,7 @@ class _SeedSearchPageState extends State<SeedSearchPage> {
                         filled: true,
                         fillColor: Colors.white,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(8),
                           borderSide: BorderSide.none,
                         ),
                       ),
@@ -359,7 +359,7 @@ class _RequestSummary extends StatelessWidget {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: const Color(0xFFEAF7EF),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -420,7 +420,7 @@ class _Field extends StatelessWidget {
           filled: true,
           fillColor: Colors.white,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
+            borderRadius: BorderRadius.circular(8),
           ),
         ),
       ),

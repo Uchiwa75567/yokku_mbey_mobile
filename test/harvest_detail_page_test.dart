@@ -22,20 +22,23 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(find.text('Continuer'));
     await tester.tap(find.text('Continuer'));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Continuer'));
     await tester.tap(find.text('Continuer'));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Publier la récolte'));
     await tester.tap(find.text('Publier la récolte'));
     await tester.pumpAndSettle();
 
     expect(find.byType(HarvestDetailPage), findsOneWidget);
     expect(find.text('Tomate fraîche'), findsOneWidget);
-    expect(find.text('350 FCFA / kg'), findsOneWidget);
-    expect(find.text('500 kg • Min 50 kg'), findsOneWidget);
-    expect(find.text('Performance'), findsOneWidget);
+    expect(find.text('400 FCFA / kg'), findsOneWidget);
+    expect(find.text('500 kg disponibles · Kaolack'), findsOneWidget);
+    expect(find.text('Informations'), findsOneWidget);
     expect(find.text('Modifier'), findsOneWidget);
-    expect(find.text('Booster l’annonce'), findsOneWidget);
+    expect(find.text('Booster'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

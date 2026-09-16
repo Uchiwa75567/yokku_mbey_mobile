@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import '../../../../core/theme/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../home/presentation/widgets/buyer_bottom_navigation.dart';
+import '../../../home/presentation/widgets/farmer_glass_surface.dart';
 import '../../../buyer_purchases/presentation/pages/buyer_purchases_page.dart';
 import '../../../buyer_needs/presentation/pages/publish_buyer_need_page.dart';
 import '../../../buyer_profile/presentation/pages/buyer_profile_page.dart';
@@ -151,7 +152,7 @@ class _BuyerProductsPageState extends State<BuyerProductsPage> {
                           width: _designWidth,
                           height: BuyerBottomNavigation.designHeight,
                           child: BuyerBottomNavigation(
-                            activeTab: BuyerNavigationTab.home,
+                            activeTab: BuyerNavigationTab.search,
                             onPrimaryAction: () => Navigator.of(
                               context,
                             ).pushNamed(PublishBuyerNeedPage.routeName),
@@ -206,7 +207,22 @@ class _ProductsCanvas extends StatelessWidget {
             right: 0,
             top: 0,
             height: 225,
-            child: ColoredBox(color: Color(0xFF087C2E)),
+            child: FarmerGlassBackground(overlayOpacity: 0.42, blurSigma: 1),
+          ),
+          const Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            height: 225,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [Color(0x55131513), Color(0xD9063D22)],
+                ),
+              ),
+            ),
           ),
           const Positioned(
             left: 27,

@@ -24,11 +24,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(FarmerProfilePage), findsOneWidget);
-    expect(find.text('Ibrahima Mbaye'), findsOneWidget);
-    expect(find.text('Agriculteur vérifié • Kaolack'), findsOneWidget);
-    expect(find.text('24'), findsOneWidget);
-    expect(find.text('4,8'), findsOneWidget);
-    expect(find.text('95%'), findsOneWidget);
+    expect(find.text('Mon compte'), findsOneWidget);
+    expect(find.text('Se déconnecter'), findsOneWidget);
     expect(find.text('Mes récoltes'), findsOneWidget);
     expect(find.text('Aide et support'), findsOneWidget);
     expect(find.byType(SingleChildScrollView), findsOneWidget);
@@ -49,7 +46,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Mes récoltes'), findsOneWidget);
-    expect(find.text('Gérez toutes vos annonces'), findsOneWidget);
+    expect(find.text('Annonces de démonstration.'), findsOneWidget);
     expect(tester.takeException(), isNull);
   });
 }

@@ -5,7 +5,10 @@ import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
+import '../../../buyer_needs/presentation/pages/publish_buyer_need_page.dart';
+import '../../../buyer_profile/presentation/pages/buyer_profile_page.dart';
 import '../../../buyer_products/presentation/pages/buyer_products_page.dart';
+import '../../../home/presentation/widgets/buyer_bottom_navigation.dart';
 import 'buyer_order_tracking_page.dart';
 
 enum _PurchaseFilter { all, pending, inProgress, completed }
@@ -147,6 +150,33 @@ class _BuyerPurchasesPageState extends State<BuyerPurchasesPage> {
               ),
             ),
           ],
+        ),
+        bottomNavigationBar: SafeArea(
+          top: false,
+          child: SizedBox(
+            height: BuyerBottomNavigation.designHeight,
+            child: FittedBox(
+              fit: BoxFit.fill,
+              child: SizedBox(
+                width: 440,
+                height: BuyerBottomNavigation.designHeight,
+                child: BuyerBottomNavigation(
+                  activeTab: BuyerNavigationTab.reservations,
+                  onHome: () =>
+                      Navigator.of(context).popUntil((route) => route.isFirst),
+                  onSearch: () => Navigator.of(
+                    context,
+                  ).pushNamed(BuyerProductsPage.routeName),
+                  onPrimaryAction: () => Navigator.of(
+                    context,
+                  ).pushNamed(PublishBuyerNeedPage.routeName),
+                  onProfile: () => Navigator.of(
+                    context,
+                  ).pushNamed(BuyerProfilePage.routeName),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

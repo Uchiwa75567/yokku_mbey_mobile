@@ -23,7 +23,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.bySemanticsLabel('Action principale'));
+    await tester.tap(find.bySemanticsLabel('Publier une demande'));
     await tester.pumpAndSettle();
 
     expect(find.byType(PublishBuyerNeedPage), findsOneWidget);

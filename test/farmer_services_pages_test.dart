@@ -33,7 +33,7 @@ void main() {
       await tester.pump();
 
       expect(find.text(entry.value), findsOneWidget);
-      expect(find.byType(CustomScrollView), findsOneWidget);
+      expect(find.byType(SingleChildScrollView), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
   }

@@ -1,10 +1,8 @@
+import '../../../../core/widgets/journey_scaffold.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../../../../core/theme/app_colors.dart';
 import '../../../harvest_detail/presentation/pages/harvest_detail_page.dart';
-import '../../../home/presentation/widgets/farmer_bottom_navigation.dart';
-import '../../../home/presentation/widgets/farmer_glass_surface.dart';
 
 enum _AvailabilityChoice { now, soon }
 
@@ -22,9 +20,6 @@ class HarvestPublicationPage extends StatefulWidget {
 }
 
 class _HarvestPublicationPageState extends State<HarvestPublicationPage> {
-  static const double _designWidth = 440;
-  static const double _designHeight = 956;
-
   int _step = 1;
   _AvailabilityChoice _availabilityChoice = _AvailabilityChoice.now;
   _DepositChoice _depositChoice = _DepositChoice.none;
@@ -98,425 +93,50 @@ class _HarvestPublicationPageState extends State<HarvestPublicationPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: Scaffold(
-        backgroundColor: const Color(0xFF18241D),
-        body: LayoutBuilder(
-          builder: (context, constraints) {
-            final scale = (constraints.maxWidth / _designWidth).clamp(0.1, 1.0);
-            final scaledWidth = _designWidth * scale;
-            final scaledHeight = _designHeight * scale;
-            final navHeight = FarmerBottomNavigation.designHeight * scale;
-            final bottomSafeInset = MediaQuery.viewPaddingOf(context).bottom;
-
-            return Center(
-              child: SizedBox(
-                width: scaledWidth,
-                height: constraints.maxHeight,
-                child: Stack(
-                  children: [
-                    SizedBox(
-                      width: scaledWidth,
-                      height: scaledHeight,
-                      child: FittedBox(
-                        fit: BoxFit.fill,
-                        alignment: Alignment.topLeft,
-                        child: SizedBox(
-                          width: _designWidth,
-                          height: _designHeight,
-                          child: _HarvestPublicationCanvas(
-                            step: _step,
-                            availabilityChoice: _availabilityChoice,
-                            depositChoice: _depositChoice,
-                            pickupChoice: _pickupChoice,
-                            allowReservations: _allowReservations,
-                            startDate: _startDate,
-                            endDate: _endDate,
-                            depositPercentController: _depositPercentController,
-                            contactPhoneController: _contactPhoneController,
-                            onBack: _goBack,
-                            onContinue: _continue,
-                            onStartDateTap: _pickStartDate,
-                            onEndDateTap: _pickEndDate,
-                            onAvailabilityChanged: (choice) {
-                              setState(() {
-                                _availabilityChoice = choice;
-                                _depositChoice =
-                                    choice == _AvailabilityChoice.soon
-                                        ? _DepositChoice.required
-                                        : _DepositChoice.none;
-                              });
-                            },
-                            onDepositChanged: (choice) {
-                              setState(() => _depositChoice = choice);
-                            },
-                            onPickupChanged: (choice) {
-                              setState(() => _pickupChoice = choice);
-                            },
-                            onReservationsChanged: (value) {
-                              setState(() => _allowReservations = value);
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: bottomSafeInset,
-                      height: navHeight,
-                      child: FittedBox(
-                        fit: BoxFit.fill,
-                        alignment: Alignment.bottomLeft,
-                        child: SizedBox(
-                          width: _designWidth,
-                          height: FarmerBottomNavigation.designHeight,
-                          child: FarmerBottomNavigation(
-                            activeTab: FarmerNavigationTab.home,
-                            onHome: () => Navigator.of(context).maybePop(),
-                            onPublishHarvest: () {},
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class _HarvestPublicationCanvas extends StatelessWidget {
-  const _HarvestPublicationCanvas({
-    required this.step,
-    required this.availabilityChoice,
-    required this.depositChoice,
-    required this.pickupChoice,
-    required this.allowReservations,
-    required this.startDate,
-    required this.endDate,
-    required this.depositPercentController,
-    required this.contactPhoneController,
-    required this.onBack,
-    required this.onContinue,
-    required this.onStartDateTap,
-    required this.onEndDateTap,
-    required this.onAvailabilityChanged,
-    required this.onDepositChanged,
-    required this.onPickupChanged,
-    required this.onReservationsChanged,
-  });
-
-  final int step;
-  final _AvailabilityChoice availabilityChoice;
-  final _DepositChoice depositChoice;
-  final _PickupChoice pickupChoice;
-  final bool allowReservations;
-  final DateTime startDate;
-  final DateTime endDate;
-  final TextEditingController depositPercentController;
-  final TextEditingController contactPhoneController;
-  final VoidCallback onBack;
-  final VoidCallback onContinue;
-  final VoidCallback onStartDateTap;
-  final VoidCallback onEndDateTap;
-  final ValueChanged<_AvailabilityChoice> onAvailabilityChanged;
-  final ValueChanged<_DepositChoice> onDepositChanged;
-  final ValueChanged<_PickupChoice> onPickupChanged;
-  final ValueChanged<bool> onReservationsChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final body = switch (step) {
-      1 => _StepOneForm(onContinue: onContinue),
-      2 => _StepTwoForm(
-          contactPhoneController: contactPhoneController,
-          onContinue: onContinue,
-        ),
-      _ => _StepThreeForm(
-          availabilityChoice: availabilityChoice,
-          depositChoice: depositChoice,
-          pickupChoice: pickupChoice,
-          allowReservations: allowReservations,
-          startDate: startDate,
-          endDate: endDate,
-          depositPercentController: depositPercentController,
-          onContinue: onContinue,
-          onStartDateTap: onStartDateTap,
-          onEndDateTap: onEndDateTap,
-          onAvailabilityChanged: onAvailabilityChanged,
-          onDepositChanged: onDepositChanged,
-          onPickupChanged: onPickupChanged,
-          onReservationsChanged: onReservationsChanged,
-        ),
-    };
-
-    return Stack(
-      children: [
-        const Positioned.fill(
-          child: FarmerGlassBackground(overlayOpacity: 0.48),
-        ),
-        const _PublicationTopBar(),
-        Positioned(
-          left: 17,
-          right: 17,
-          top: 73,
-          child: _PublicationHeader(step: step, onBack: onBack),
-        ),
-        Positioned(
-          left: 10,
-          right: 10,
-          top: 188,
-          bottom: 90,
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 17, 16, 22),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: body,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _PublicationTopBar extends StatelessWidget {
-  const _PublicationTopBar();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Positioned(
-      left: 0,
-      right: 0,
-      top: 0,
-      height: 62,
-      child: FarmerGlassSurface(
-        color: Color(0x1AFFFFFF),
-        blurSigma: 16,
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(24),
-        ),
-        borderColor: Color(0x33FFFFFF),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            children: [
-              SizedBox.square(
-                dimension: 32,
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: Color(0x33FFFFFF),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.eco_rounded,
-                    color: AppColors.white,
-                    size: 20,
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  'Yokku Mbey',
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontSize: 19,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
-                  ),
-                ),
-              ),
-              Icon(
-                Icons.notifications_none_rounded,
-                color: AppColors.white,
-                size: 22,
-              ),
-              SizedBox(width: 12),
-              CircleAvatar(
-                radius: 15,
-                backgroundColor: Color(0x33FFFFFF),
-                child: Icon(
-                  Icons.person_rounded,
-                  color: AppColors.white,
-                  size: 19,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _PublicationHeader extends StatelessWidget {
-  const _PublicationHeader({
-    required this.step,
-    required this.onBack,
-  });
-
-  final int step;
-  final VoidCallback onBack;
-
-  @override
-  Widget build(BuildContext context) {
-    final subtitle = switch (step) {
-      1 => 'Ajoutez les détails essentiels de votre production.',
-      2 => 'Renseignez le volume, le prix et la localisation.',
-      _ => 'Définissez la disponibilité, la réservation et le retrait.',
-    };
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            _BackButton(onPressed: onBack),
-            const SizedBox(width: 10),
-            const Expanded(
-              child: Text(
-                'Publier une récolte',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  color: AppColors.white,
-                  fontSize: 25,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.4,
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: const Color(0xB3122819),
-                borderRadius: BorderRadius.circular(99),
-                border: Border.all(color: const Color(0x4DFFFFFF)),
-              ),
-              child: Text(
-                'Étape $step sur 3',
-                style: const TextStyle(
-                  color: AppColors.white,
-                  fontSize: 10,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 11),
-        _StepProgressIndicator(step: step),
-        const SizedBox(height: 8),
-        Text(
-          subtitle,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(
-            color: Color(0xFFE7EFE9),
-            fontSize: 12,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _StepProgressIndicator extends StatelessWidget {
-  const _StepProgressIndicator({required this.step});
-
-  final int step;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        for (var index = 1; index <= 3; index++) ...[
-          _StepDot(index: index, activeStep: step),
-          if (index < 3)
-            Expanded(
-              child: Container(
-                height: 2,
-                color: index < step
-                    ? const Color(0xFF9BE5AE)
-                    : const Color(0x66FFFFFF),
-              ),
-            ),
-        ],
-      ],
-    );
-  }
-}
-
-class _StepDot extends StatelessWidget {
-  const _StepDot({required this.index, required this.activeStep});
-
-  final int index;
-  final int activeStep;
-
-  @override
-  Widget build(BuildContext context) {
-    final isActive = index == activeStep;
-    final isComplete = index < activeStep;
-    return Container(
-      width: 24,
-      height: 24,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: isActive
-            ? const Color(0xFF087C3A)
-            : isComplete
-                ? const Color(0xFFB9EBC5)
-                : const Color(0xCCFFFFFF),
-        shape: BoxShape.circle,
-        border: Border.all(color: const Color(0x99FFFFFF)),
-      ),
-      child: isComplete
-          ? const Icon(Icons.check_rounded, size: 14, color: Color(0xFF075D2B))
-          : Text(
-              '$index',
-              style: TextStyle(
-                color: isActive ? AppColors.white : const Color(0xFF385042),
-                fontSize: 11,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-    );
-  }
-}
-
-class _BackButton extends StatelessWidget {
-  const _BackButton({required this.onPressed});
-
-  final VoidCallback onPressed;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox.square(
-      dimension: 34,
-      child: Material(
-        color: const Color(0x33FFFFFF),
-        shape: const CircleBorder(),
-        child: InkWell(
-          onTap: onPressed,
-          customBorder: const CircleBorder(),
-          child: const Icon(
-            Icons.chevron_left,
-            color: AppColors.white,
-            size: 27,
-          ),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      JourneyScaffold(title: 'Publier une récolte', children: [
+        Row(children: [
+          if (_step > 1)
+            IconButton(
+                tooltip: 'Étape précédente',
+                onPressed: _goBack,
+                icon: const Icon(Icons.arrow_back)),
+          Expanded(
+              child: Text('Étape $_step sur 3',
+                  style: const TextStyle(color: journeyMuted))),
+        ]),
+        LinearProgressIndicator(value: _step / 3, minHeight: 4),
+        if (_step == 1)
+          _StepOneForm(onContinue: _continue)
+        else if (_step == 2)
+          _StepTwoForm(
+              contactPhoneController: _contactPhoneController,
+              onContinue: _continue)
+        else
+          _StepThreeForm(
+              availabilityChoice: _availabilityChoice,
+              depositChoice: _depositChoice,
+              pickupChoice: _pickupChoice,
+              allowReservations: _allowReservations,
+              startDate: _startDate,
+              endDate: _endDate,
+              depositPercentController: _depositPercentController,
+              onContinue: _continue,
+              onStartDateTap: _pickStartDate,
+              onEndDateTap: _pickEndDate,
+              onAvailabilityChanged: (v) => setState(() {
+                    _availabilityChoice = v;
+                    _depositChoice = v == _AvailabilityChoice.soon
+                        ? _DepositChoice.required
+                        : _DepositChoice.none;
+                  }),
+              onDepositChanged: (v) => setState(() => _depositChoice = v),
+              onPickupChanged: (v) => setState(() => _pickupChoice = v),
+              onReservationsChanged: (v) =>
+                  setState(() => _allowReservations = v)),
+        const JourneyNotice(
+            'Aperçu de publication. La diffusion des annonces et les paiements ne sont pas connectés.'),
+      ]);
 }
 
 class _FormSectionTitle extends StatelessWidget {
@@ -548,10 +168,10 @@ class _FormSectionTitle extends StatelessWidget {
           child: Text(
             title,
             style: const TextStyle(
-              color: AppColors.white,
+              color: AppColors.ink,
               fontSize: 17,
               fontWeight: FontWeight.w800,
-              letterSpacing: -0.2,
+              letterSpacing: 0,
             ),
           ),
         ),
@@ -559,7 +179,7 @@ class _FormSectionTitle extends StatelessWidget {
           Text(
             trailing!,
             style: const TextStyle(
-              color: Color(0xFFDCE8DF),
+              color: AppColors.mutedInk,
               fontSize: 10,
               fontWeight: FontWeight.w700,
             ),
@@ -608,19 +228,7 @@ class _GlassFormCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(13),
-      decoration: BoxDecoration(
-        color: const Color(0xBFFFFFFF),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xCCFFFFFF)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x140A2A16),
-            blurRadius: 12,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
+      padding: const EdgeInsets.symmetric(vertical: 13),
       child: child,
     );
   }
@@ -647,7 +255,7 @@ class _StepOneForm extends StatelessWidget {
         const Text(
           "Ajouter jusqu'à 5 photos",
           style: TextStyle(
-            color: Color(0xFFDCE8DF),
+            color: AppColors.mutedInk,
             fontSize: 11,
             fontWeight: FontWeight.w600,
           ),
@@ -708,7 +316,7 @@ class _PhotoTile extends StatelessWidget {
       height: 88,
       decoration: BoxDecoration(
         color: primary ? const Color(0xFFE8F5DF) : const Color(0x99FFFFFF),
-        borderRadius: BorderRadius.circular(13),
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: primary ? const Color(0xFFB9DDB2) : const Color(0x80FFFFFF),
         ),
@@ -823,7 +431,7 @@ class _StepTwoForm extends StatelessWidget {
         const Text(
           'Ce numéro sera utilisé par les acheteurs pour vous contacter.',
           style: TextStyle(
-            color: Color(0xFFDCE8DF),
+            color: AppColors.mutedInk,
             fontSize: 10,
             fontWeight: FontWeight.w500,
           ),
@@ -884,7 +492,7 @@ class _StepThreeForm extends StatelessWidget {
         const Text(
           'Configurez la disponibilité et les modalités de réservation.',
           style: TextStyle(
-            color: Color(0xFFDCE8DF),
+            color: AppColors.mutedInk,
             fontSize: 11,
             fontWeight: FontWeight.w500,
           ),
@@ -1187,15 +795,15 @@ class _PickupOption extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: selected ? const Color(0xFFE4F1E5) : const Color(0x99FFFFFF),
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(8),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         child: Container(
           height: 59,
           padding: const EdgeInsets.symmetric(horizontal: 11),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color:
                   selected ? const Color(0xFF6DA578) : const Color(0x99D7E0D9),
@@ -1439,7 +1047,7 @@ class _PublicationInput extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: const TextStyle(
-            color: AppColors.white,
+            color: AppColors.ink,
             fontSize: 14,
             fontWeight: FontWeight.w800,
             letterSpacing: 0,
@@ -1505,20 +1113,20 @@ class _PrimaryButton extends StatelessWidget {
     return Align(
       alignment: Alignment.center,
       child: SizedBox(
-        width: 255,
-        height: 56,
+        width: double.infinity,
         child: FilledButton.icon(
           onPressed: onPressed,
           style: FilledButton.styleFrom(
-            backgroundColor: const Color(0xFF007A00),
+            backgroundColor: AppColors.leaf,
             foregroundColor: AppColors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(8),
             ),
             textStyle: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
+              fontFamily: 'Roboto',
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
               letterSpacing: 0,
             ),
           ),

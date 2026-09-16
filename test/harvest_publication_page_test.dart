@@ -21,7 +21,8 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Ajouter\nune récolte'));
+    await tester.ensureVisible(find.text('Ajouter une récolte'));
+    await tester.tap(find.text('Ajouter une récolte'));
     await tester.pumpAndSettle();
 
     expect(find.byType(HarvestPublicationPage), findsOneWidget);
@@ -41,6 +42,7 @@ void main() {
       ),
     );
 
+    await tester.ensureVisible(find.text('Continuer'));
     await tester.tap(find.text('Continuer'));
     await tester.pumpAndSettle();
 
@@ -48,6 +50,7 @@ void main() {
     expect(find.text('Quantité et prix'), findsOneWidget);
     expect(find.text('Localisation'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Continuer'));
     await tester.tap(find.text('Continuer'));
     await tester.pumpAndSettle();
 
@@ -56,6 +59,7 @@ void main() {
     expect(find.text('Disponible maintenant'), findsOneWidget);
     expect(find.text('Mode de récupération'), findsOneWidget);
 
+    await tester.ensureVisible(find.text('Disponible prochainement'));
     await tester.tap(find.text('Disponible prochainement'));
     await tester.pumpAndSettle();
 
